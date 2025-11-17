@@ -11,8 +11,28 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
+   /* Base Styles & Variables */
+      :root {
+        --primary: #6a11cb;
+        --secondary: #2575fc;
+        --accent: #ff2d75;
+        --success: #00c851;
+        --warning: #ffbb33;
+        --dark: #1a1a2e;
+        --light: #f8f9fa;
+        --gray: #6c757d;
+        --card-bg: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
 
-      /* Updated responsive back button styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+            /* Updated responsive back button styles */
 .btn-outline {
     background: transparent;
     border: 2px solid var(--primary);
@@ -53,27 +73,7 @@
         font-size: 0.9rem;
     }
 }
-      /* Base Styles & Variables */
-      :root {
-        --primary: #6a11cb;
-        --secondary: #2575fc;
-        --accent: #ff2d75;
-        --success: #00c851;
-        --warning: #ffbb33;
-        --dark: #1a1a2e;
-        --light: #f8f9fa;
-        --gray: #6c757d;
-        --card-bg: #ffffff;
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s ease;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-      }
+   
 
       body {
         background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
@@ -626,14 +626,15 @@
   </head>
   <body>
     <!-- Header -->
-    <header>
-   <div class="container header-container">
+<header>
+  <div class="container header-container">
     <div class="logo">Social<span>Boost</span> Pro</div>
     <a href="/" class="btn btn-outline">
       <i class="fas fa-arrow-left"></i> Back to Home
     </a>
   </div>
-    </header>
+</header>
+
 
     <!-- Order Section -->
     <section class="order-section">
