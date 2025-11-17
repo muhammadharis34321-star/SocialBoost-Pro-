@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,7 +12,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
-   /* Base Styles & Variables */
+      /* Base Styles & Variables */
       :root {
         --primary: #6a11cb;
         --secondary: #2575fc;
@@ -32,57 +33,20 @@
         box-sizing: border-box;
         font-family: "Poppins", sans-serif;
       }
-            /* Updated responsive back button styles */
-.btn-outline {
-    background: transparent;
-    border: 2px solid var(--primary);
-    color: var(--primary);
-    box-shadow: none;
-    white-space: nowrap;
-    margin-left: auto;
-}
 
-.btn-outline:hover {
-    background: var(--primary);
-    color: white;
-}
-
-/* Responsive button adjustments */
-@media (max-width: 768px) {
-    .header-container {
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-    
-    .btn-outline {
-        margin-left: 0;
-        margin-right: 0;
-        order: 2;
+      html, body {
+        overflow-x: hidden;
         width: 100%;
-        text-align: center;
-    }
-    
-    .logo {
-        order: 1;
-    }
-}
-
-@media (max-width: 576px) {
-    .btn-outline {
-        padding: 12px 20px;
-        font-size: 0.9rem;
-    }
-}
-   
+      }
 
       body {
         background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
         color: var(--dark);
         line-height: 1.6;
-        overflow-x: hidden;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        position: relative;
       }
 
       .container {
@@ -101,6 +65,8 @@
         top: 0;
         z-index: 1000;
         backdrop-filter: blur(10px);
+        left: 0;
+        right: 0;
       }
 
       .header-container {
@@ -128,6 +94,7 @@
         padding-top: 120px;
         padding-bottom: 80px;
         flex: 1;
+        width: 100%;
       }
 
       .order-container {
@@ -136,11 +103,13 @@
         gap: 40px;
         max-width: 1000px;
         margin: 0 auto;
+        width: 100%;
       }
 
       .order-form-container {
         flex: 1;
         min-width: 300px;
+        width: 100%;
       }
 
       .order-summary-sidebar {
@@ -152,6 +121,7 @@
         height: fit-content;
         position: sticky;
         top: 100px;
+        width: 100%;
       }
 
       .order-card {
@@ -159,6 +129,7 @@
         border-radius: 15px;
         padding: 40px;
         box-shadow: var(--shadow);
+        width: 100%;
       }
 
       .order-progress {
@@ -166,6 +137,7 @@
         justify-content: space-between;
         margin-bottom: 40px;
         position: relative;
+        width: 100%;
       }
 
       .order-progress::before {
@@ -347,16 +319,25 @@
         background: linear-gradient(to right, var(--accent), #ff5e8e);
       }
 
+      /* Back to Home Button Styles */
       .btn-outline {
         background: transparent;
         border: 2px solid var(--primary);
         color: var(--primary);
         box-shadow: none;
+        white-space: nowrap;
+        margin-left: auto;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .btn-outline:hover {
         background: var(--primary);
         color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
       }
 
       .form-actions {
@@ -516,11 +497,39 @@
         .payment-options {
           grid-template-columns: 1fr;
         }
+
+        /* Responsive header adjustments */
+        .header-container {
+          flex-wrap: wrap;
+          gap: 15px;
+        }
+        
+        .btn-outline {
+          margin-left: 0;
+          order: 2;
+          width: 100%;
+          text-align: center;
+          justify-content: center;
+        }
+        
+        .logo {
+          order: 1;
+        }
       }
 
       @media (max-width: 576px) {
+        html, body {
+          overflow-x: hidden;
+        }
+        
+        .container {
+          width: 95%;
+          padding: 0 10px;
+        }
+        
         .order-card {
-          padding: 25px;
+          padding: 25px 20px;
+          margin: 20px 0;
         }
 
         .order-progress {
@@ -539,6 +548,27 @@
 
         .step-label {
           font-size: 1rem;
+        }
+
+        .btn-outline {
+          padding: 12px 20px;
+          font-size: 0.9rem;
+        }
+        
+        .order-section {
+          padding-top: 100px;
+          padding-bottom: 40px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+          padding: 12px;
+        }
+        
+        .btn {
+          padding: 12px 25px;
+          font-size: 0.9rem;
         }
       }
 
@@ -585,56 +615,59 @@
         color: #6c757d;
         cursor: not-allowed;
       }
-      /* Verification Status Styles - Add this to your existing CSS */
-.verification-status {
-    padding: 10px 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.verification-status.success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-.verification-status.error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-.verification-status.loading {
-    background: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
+      
+      /* Verification Status Styles */
+      .verification-status {
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .verification-status.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      
+      .verification-status.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      
+      .verification-status.loading {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
 
-.verification-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #28a745;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    margin-left: 10px;
-}
+      .verification-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #28a745;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+      }
     </style>
   </head>
   <body>
     <!-- Header -->
-<header>
-  <div class="container header-container">
-    <div class="logo">Social<span>Boost</span> Pro</div>
-    <a href="/" class="btn btn-outline">
-      <i class="fas fa-arrow-left"></i> Back to Home
-    </a>
-  </div>
-</header>
-
+    <header>
+      <div class="container header-container">
+        <div class="logo">Social<span>Boost</span> Pro</div>
+        <a href="/" class="btn btn-outline">
+          <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+      </div>
+    </header>
 
     <!-- Order Section -->
     <section class="order-section">
