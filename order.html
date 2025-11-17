@@ -11,6 +11,48 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
+
+      /* Updated responsive back button styles */
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    box-shadow: none;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.btn-outline:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* Responsive button adjustments */
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .btn-outline {
+        margin-left: 0;
+        margin-right: 0;
+        order: 2;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .logo {
+        order: 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn-outline {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}
       /* Base Styles & Variables */
       :root {
         --primary: #6a11cb;
@@ -585,16 +627,12 @@
   <body>
     <!-- Header -->
     <header>
-      <div class="container header-container">
-        <div class="logo">Social<span>Boost</span> Pro</div>
-        <a
-          href="/"
-          class="btn btn-outline"
-          style="margin-left: auto; margin-right: 20px"
-        >
-          <i class="fas fa-arrow-left"></i> Back to Home
-        </a>
-      </div>
+   <div class="container header-container">
+    <div class="logo">Social<span>Boost</span> Pro</div>
+    <a href="/" class="btn btn-outline">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+  </div>
     </header>
 
     <!-- Order Section -->
