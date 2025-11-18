@@ -851,16 +851,33 @@
 
       <script>
         // ✅ BACKEND API CONFIGURATION
-const BACKEND_URL = 'https://python22.pythonanywhere.com';
+const API_BASE = 'https://python22.pythonanywhere.com';
 
-fetch(BACKEND_URL + '/api/create-order', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(orderData)
-})
-   
+// ✅ TEST BACKEND CONNECTION
+async function testBackend() {
+    try {
+        const response = await fetch(`${API_BASE}/test`);
+        
+        // Pehle text mein receive karo
+        const text = await response.text();
+        console.log('✅ Backend connected:', text);
+        
+        // Phir JSON try karo
+        try {
+            const data = JSON.parse(text);
+            console.log('✅ Backend JSON:', data);
+        } catch {
+            console.log('✅ Backend Text:', text);
+        }
+        
+    } catch (error) {
+        console.error('❌ Backend connection failed:', error);
+    }
+}
+
+// Page load pe test karo
+window.addEventListener('load', testBackend);
+ 
         // Get URL parameters to pre-fill platform
         const urlParams = new URLSearchParams(window.location.search);
         const platform = urlParams.get('platform') || 'TikTok';
