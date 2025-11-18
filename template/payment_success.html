@@ -117,5 +117,17 @@
         {% endif %}
       </div>
     </div>
+    <script>
+      const BACKEND_URL = 'https://python22.pythonanywhere.com';
+
+fetch(BACKEND_URL + '/api/create-order', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(orderData)
+})
+   
+    </script>
   </body>
 </html>
