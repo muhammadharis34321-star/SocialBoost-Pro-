@@ -612,6 +612,42 @@
                 }
             };
             
+            // Auto-generate order data for any SB order ID
+            if (orderId.startsWith('SB')) {
+                // Generate random order data for demo
+                const platforms = ['TikTok', 'Instagram', 'YouTube', 'Facebook'];
+                const services = ['Followers', 'Likes', 'Views', 'Subscribers'];
+                const statuses = ['processing', 'completed', 'failed'];
+                
+                const randomPlatform = platforms[Math.floor(Math.random() * platforms.length)];
+                const randomService = services[Math.floor(Math.random() * services.length)];
+                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                const randomProgress = randomStatus === 'completed' ? 100 : 
+                                     randomStatus === 'failed' ? 30 : 
+                                     Math.floor(Math.random() * 40) + 40;
+                
+                return {
+                    id: orderId,
+                    date: new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    }),
+                    status: randomStatus,
+                    progress: randomProgress,
+                    platform: randomPlatform,
+                    service: randomService,
+                    quantity: Math.floor(Math.random() * 5000) + 100,
+                    amount: (Math.floor(Math.random() * 10000) + 500) + ' PKR',
+                    username: '@user' + Math.floor(Math.random() * 1000),
+                    email: 'user' + Math.floor(Math.random() * 1000) + '@example.com',
+                    phone: '+92 300 ' + Math.floor(Math.random() * 10000000).toString().padStart(7, '0'),
+                    estimatedCompletion: randomStatus === 'completed' ? 
+                        'Completed on ' + new Date().toLocaleString() : 
+                        'Expected by ' + new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleString()
+                };
+            }
+            
             return orders[orderId] || null;
         }
 
