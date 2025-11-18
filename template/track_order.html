@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Your Order - SocialBoost Pro</title>
     <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/3133/3133301.png">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -13,6 +12,7 @@
             --secondary: #2575fc;
             --success: #00c851;
             --warning: #ffbb33;
+            --danger: #ff4444;
             --dark: #1a1a2e;
             --light: #f8f9fa;
             --border-radius: 12px;
@@ -101,6 +101,7 @@
         
         .search-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
         }
         
         .order-status {
@@ -112,7 +113,7 @@
         
         .status-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
@@ -125,12 +126,23 @@
         }
         
         .status-badge {
-            background: var(--success);
             color: white;
             padding: 8px 16px;
             border-radius: 20px;
             font-weight: 600;
             font-size: 14px;
+        }
+        
+        .status-processing {
+            background: var(--warning);
+        }
+        
+        .status-completed {
+            background: var(--success);
+        }
+        
+        .status-failed {
+            background: var(--danger);
         }
         
         .progress-tracker {
@@ -218,6 +230,43 @@
             margin: 30px 0;
         }
         
+        .order-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+        }
+        
+        .order-details h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .detail-item {
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .detail-item strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
         .order-actions {
             display: flex;
             gap: 15px;
@@ -253,8 +302,32 @@
             transform: translateY(-2px);
         }
         
+        .btn-primary:hover {
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+        }
+        
         .hidden {
             display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         @media (max-width: 768px) {
@@ -284,6 +357,16 @@
             .order-actions {
                 flex-direction: column;
             }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
         }
     </style>
 </head>
@@ -300,9 +383,16 @@
                 <input type="text" class="search-input" id="orderIdInput" 
                        placeholder="Enter your Order ID (e.g., SB20251117112725652)" required>
                 <button type="submit" class="search-btn">
-                    <i class="fas fa-search"></i> Track
+                    <i class="fas fa-search"></i> Track Order
                 </button>
             </form>
+        </div>
+        
+        <div id="loadingState" class="order-status hidden">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Searching for your order...</p>
+            </div>
         </div>
         
         <div id="orderStatus" class="order-status hidden">
@@ -316,25 +406,25 @@
             
             <div class="progress-tracker">
                 <div class="progress-steps">
-                    <div class="progress-bar" id="progressBar" style="width: 50%;"></div>
+                    <div class="progress-bar" id="progressBar"></div>
                     
                     <div class="step completed" id="step1">
                         <div class="step-icon">
-                            <i class="fas fa-check"></i>
+                            <i class="fas fa-shopping-cart"></i>
                         </div>
                         <div class="step-text">Order Placed</div>
                     </div>
                     
                     <div class="step completed" id="step2">
                         <div class="step-icon">
-                            <i class="fas fa-check"></i>
+                            <i class="fas fa-credit-card"></i>
                         </div>
                         <div class="step-text">Payment Verified</div>
                     </div>
                     
                     <div class="step active" id="step3">
                         <div class="step-icon">
-                            <i class="fas fa-cog fa-spin"></i>
+                            <i class="fas fa-cog"></i>
                         </div>
                         <div class="step-text">Processing</div>
                     </div>
@@ -362,8 +452,8 @@
             </div>
             
             <div class="order-details">
-                <h3>Order Details</h3>
-                <div id="orderDetails">
+                <h3><i class="fas fa-receipt"></i> Order Details</h3>
+                <div class="detail-grid" id="orderDetails">
                     <!-- Order details will be loaded here -->
                 </div>
             </div>
@@ -392,289 +482,279 @@
         </div>
     </div>
 
-<script>
-    // ✅ BACKEND API CONFIGURATION
-    const API_BASE = 'https://python22.pythonanywhere.com';
+    <script>
+        // ✅ BACKEND API CONFIGURATION
+        const API_BASE = 'https://python22.pythonanywhere.com';
 
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const platform = urlParams.get('platform') || 'TikTok';
-    const service = urlParams.get('service') || 'followers';
-    const quantity = urlParams.get('quantity') || '';
-
-    // DOM Elements
-    const platformBadge = document.getElementById('platformBadge');
-    const serviceTypeSelect = document.getElementById('serviceType');
-    const quantityInput = document.getElementById('quantity');
-    const usernameInput = document.getElementById('username');
-    const emailInput = document.getElementById('email');
-    const phoneInput = document.getElementById('phone');
-    const nextToPaymentBtn = document.getElementById('nextToPayment');
-    const backToOrderBtn = document.getElementById('backToOrder');
-    const completeOrderBtn = document.getElementById('completeOrder');
-    const paymentOptions = document.querySelectorAll('.payment-option');
-
-    // Variables
-    let currentPlatform = platform;
-    let selectedPaymentMethod = '';
-    let isAccountVerified = false;
-
-    // ✅ REAL PRICING
-    const pricing = {
-        'TikTok': {
-            'followers': { '20': 80, '100': 350, '500': 1500, '1000': 2800, '5000': 12000, '10000': 22000, 'default': 2.2 },
-            'likes': { '200': 200, '500': 450, '1000': 850, '5000': 3800, 'default': 0.76 }
-        },
-        'Instagram': {
-            'followers': { '200': 230, '500': 500, '1000': 900, '2000': 1700, '3000': 2400, 'default': 0.8 },
-            'likes': { '100': 120, '500': 500, '1000': 900, '2000': 1700, 'default': 0.85 }
-        },
-        'YouTube': {
-            'subscribers': { '1000': 4000, '2000': 7500, '3000': 10500, '4000': 13500, '5000': 16000, '6000': 18500, 'default': 3.1 }
-        },
-        'Monetize': {
-            'monetization': { '1': 8000 }
-        }
-    };
-
-    // ✅ INITIALIZE
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeForm();
-        setupEventListeners();
-        setupRealTimeValidation();
-    });
-
-    function initializeForm() {
-        // Set platform
-        platformBadge.textContent = currentPlatform;
-        platformBadge.className = 'platform-badge ' + (
-            currentPlatform === 'TikTok' ? 'badge-tiktok' :
-            currentPlatform === 'Instagram' ? 'badge-instagram' :
-            currentPlatform === 'YouTube' ? 'badge-youtube' : 'badge-monetize'
-        );
-
-        // Pre-fill values
-        if (service) serviceTypeSelect.value = service;
-        if (quantity) quantityInput.value = quantity;
-
-        // Update summary
-        updateOrderSummary();
-    }
-
-    function setupEventListeners() {
-        nextToPaymentBtn.addEventListener('click', handleNextToPayment);
-        backToOrderBtn.addEventListener('click', () => goToStep(1));
-        completeOrderBtn.addEventListener('click', handleCompleteOrder);
-
-        // Payment method selection
-        paymentOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                paymentOptions.forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedPaymentMethod = this.getAttribute('data-method');
-            });
-        });
-
-        // Auto price updates
-        serviceTypeSelect.addEventListener('change', updateOrderSummary);
-        quantityInput.addEventListener('input', updateOrderSummary);
-    }
-
-    function setupRealTimeValidation() {
-        // Username validation
-        usernameInput.addEventListener('input', function() {
-            const username = this.value.trim();
-            if (username.length >= 3) {
-                verifyAccount(username);
-            } else {
-                clearAccountVerificationStatus();
-                isAccountVerified = false;
-            }
-        });
-    }
-
-    async function verifyAccount(username) {
-        showAccountVerificationStatus('⏳ Checking account...', 'loading');
+        // Check if order ID is passed in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderIdFromUrl = urlParams.get('order_id');
         
-        try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // Real validation logic
-            const isValid = await checkAccountRealTime(username);
-            
-            if (isValid) {
-                showAccountVerificationStatus('✅ Account verified successfully', 'success');
-                isAccountVerified = true;
-            } else {
-                showAccountVerificationStatus('❌ Account not found', 'error');
-                isAccountVerified = false;
-            }
-        } catch (error) {
-            showAccountVerificationStatus('❌ Verification failed', 'error');
-            isAccountVerified = false;
-        }
-    }
-
-    async function checkAccountRealTime(username) {
-        return new Promise((resolve) => {
+        // Auto-fill order ID if passed in URL
+        if (orderIdFromUrl) {
+            document.getElementById('orderIdInput').value = orderIdFromUrl;
+            // Auto-track the order
             setTimeout(() => {
-                // Real validation logic
-                const patterns = {
-                    'TikTok': /^[a-zA-Z0-9._]{3,24}$/,
-                    'Instagram': /^[a-zA-Z0-9._]{1,30}$/,
-                    'YouTube': /^[a-zA-Z0-9]{3,30}$/
-                };
+                trackOrderFromUrl();
+            }, 500);
+        }
+
+        // Track order from form submission
+        function trackOrder(event) {
+            event.preventDefault();
+            
+            const orderIdInput = document.getElementById('orderIdInput');
+            const orderId = orderIdInput.value.trim();
+            
+            if (!orderId) {
+                alert('Please enter an Order ID');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('orderStatus').classList.add('hidden');
+            document.getElementById('orderNotFound').classList.add('hidden');
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                fetchOrderDetails(orderId);
+            }, 1500);
+        }
+
+        // Track order from URL parameter
+        function trackOrderFromUrl() {
+            const orderId = orderIdFromUrl;
+            
+            if (!orderId) return;
+            
+            // Show loading state
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('orderStatus').classList.add('hidden');
+            document.getElementById('orderNotFound').classList.add('hidden');
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                fetchOrderDetails(orderId);
+            }, 1500);
+        }
+
+        // Fetch order details from API
+        async function fetchOrderDetails(orderId) {
+            try {
+                // In a real implementation, you would call your backend API
+                // const response = await fetch(`${API_BASE}/api/orders/${orderId}`);
+                // const orderData = await response.json();
                 
-                const pattern = patterns[currentPlatform];
-                const isValid = pattern ? pattern.test(username) : true;
-                resolve(isValid);
-            }, 1000);
-        });
-    }
-
-    function updateOrderSummary() {
-        const serviceType = serviceTypeSelect.value;
-        const quantity = parseInt(quantityInput.value) || 0;
-        const username = usernameInput.value || '-';
-
-        document.getElementById('summaryService').textContent = currentPlatform;
-        document.getElementById('summaryType').textContent = serviceType;
-        document.getElementById('summaryQuantity').textContent = quantity;
-        document.getElementById('summaryUsername').textContent = username;
-
-        // Calculate price
-        let price = 0;
-        if (serviceType && quantity > 0 && pricing[currentPlatform] && pricing[currentPlatform][serviceType]) {
-            const servicePricing = pricing[currentPlatform][serviceType];
-            price = servicePricing[quantity] || Math.round(quantity * servicePricing.default);
+                // For demo purposes, we'll simulate API response
+                const orderData = simulateOrderData(orderId);
+                
+                // Hide loading state
+                document.getElementById('loadingState').classList.add('hidden');
+                
+                if (orderData) {
+                    displayOrderStatus(orderData);
+                } else {
+                    showOrderNotFound();
+                }
+            } catch (error) {
+                console.error('Error fetching order details:', error);
+                document.getElementById('loadingState').classList.add('hidden');
+                showOrderNotFound();
+            }
         }
 
-        document.getElementById('summaryTotal').textContent = price.toLocaleString() + ' PKR';
-    }
-
-    function goToStep(stepNumber) {
-        // Hide all steps
-        document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
-        document.querySelectorAll('.progress-step').forEach(step => {
-            step.classList.remove('active', 'completed');
-        });
-
-        if (stepNumber === 1) {
-            document.getElementById('formStep1').classList.add('active');
-            document.getElementById('step1').classList.add('active');
-        } else if (stepNumber === 2) {
-            document.getElementById('formStep2').classList.add('active');
-            document.getElementById('step1').classList.add('completed');
-            document.getElementById('step2').classList.add('active');
-        } else if (stepNumber === 3) {
-            document.getElementById('formStep3').classList.add('active');
-            document.getElementById('step1').classList.add('completed');
-            document.getElementById('step2').classList.add('completed');
-            document.getElementById('step3').classList.add('active');
+        // Simulate order data for demo
+        function simulateOrderData(orderId) {
+            // In a real implementation, this would come from your backend
+            const orders = {
+                'SB20251117112725652': {
+                    id: 'SB20251117112725652',
+                    date: 'November 17, 2025',
+                    status: 'processing', // processing, completed, failed
+                    progress: 50, // percentage of progress
+                    platform: 'TikTok',
+                    service: 'Followers',
+                    quantity: '1000',
+                    amount: '2800 PKR',
+                    username: '@socialuser',
+                    email: 'user@example.com',
+                    phone: '+92 300 1234567',
+                    estimatedCompletion: 'November 18, 2025, 02:30 PM'
+                },
+                'SB20251118143045981': {
+                    id: 'SB20251118143045981',
+                    date: 'November 18, 2025',
+                    status: 'completed',
+                    progress: 100,
+                    platform: 'Instagram',
+                    service: 'Likes',
+                    quantity: '500',
+                    amount: '500 PKR',
+                    username: '@instagramuser',
+                    email: 'user2@example.com',
+                    phone: '+92 301 2345678',
+                    estimatedCompletion: 'Completed on November 18, 2025, 10:15 AM'
+                },
+                'SB20251119112032876': {
+                    id: 'SB20251119112032876',
+                    date: 'November 19, 2025',
+                    status: 'failed',
+                    progress: 30,
+                    platform: 'YouTube',
+                    service: 'Subscribers',
+                    quantity: '1000',
+                    amount: '4000 PKR',
+                    username: 'youtuberchannel',
+                    email: 'user3@example.com',
+                    phone: '+92 302 3456789',
+                    estimatedCompletion: 'On hold - Please contact support'
+                }
+            };
             
-            // Generate order ID
-            document.getElementById('orderId').textContent = 'SB' + Math.floor(10000 + Math.random() * 90000);
-        }
-    }
-
-    // ✅ REAL ORDER CREATION
-    async function handleCompleteOrder() {
-        if (!selectedPaymentMethod) {
-            alert('❌ Please select a payment method');
-            return;
+            return orders[orderId] || null;
         }
 
-        if (!validateOrderForm()) {
-            return;
-        }
-
-        const orderData = {
-            platform: currentPlatform,
-            service_type: serviceTypeSelect.value,
-            quantity: parseInt(quantityInput.value),
-            username: usernameInput.value,
-            email: emailInput.value,
-            phone: phoneInput.value,
-            payment_method: selectedPaymentMethod,
-            total_amount: document.getElementById('summaryTotal').textContent.replace(' PKR', '').replace(/,/g, '')
-        };
-
-        completeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Order...';
-        completeOrderBtn.disabled = true;
-
-        try {
-            // Generate order ID
-            const orderId = 'SB' + Date.now() + Math.floor(100, 999);
+        // Display order status
+        function displayOrderStatus(orderData) {
+            // Update order info
+            document.getElementById('displayOrderId').textContent = orderData.id;
+            document.getElementById('orderDate').textContent = orderData.date;
             
-            // ✅ REDIRECT TO PAYMENT PAGE
-            const paymentPage = selectedPaymentMethod === 'jazzcash' ? 'jazzcash_payment.html' : 'easypaisa_payment.html';
-            const params = new URLSearchParams({
-                order_id: orderId,
-                platform: orderData.platform,
-                service: orderData.service_type,
-                quantity: orderData.quantity,
-                username: orderData.username,
-                amount: orderData.total_amount,
-                phone: orderData.phone
+            // Update status badge
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.textContent = orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1);
+            statusBadge.className = 'status-badge';
+            
+            if (orderData.status === 'processing') {
+                statusBadge.classList.add('status-processing');
+            } else if (orderData.status === 'completed') {
+                statusBadge.classList.add('status-completed');
+            } else if (orderData.status === 'failed') {
+                statusBadge.classList.add('status-failed');
+            }
+            
+            // Update progress
+            updateProgress(orderData.progress, orderData.status);
+            
+            // Update completion time
+            document.getElementById('completionTime').textContent = orderData.estimatedCompletion;
+            
+            // Update order details
+            const orderDetails = document.getElementById('orderDetails');
+            orderDetails.innerHTML = `
+                <div class="detail-item">
+                    <strong>Platform</strong>
+                    <span>${orderData.platform}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Service</strong>
+                    <span>${orderData.service}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Quantity</strong>
+                    <span>${orderData.quantity}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Amount</strong>
+                    <span>${orderData.amount}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Username</strong>
+                    <span>${orderData.username}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Contact Email</strong>
+                    <span>${orderData.email}</span>
+                </div>
+            `;
+            
+            // Show order status
+            document.getElementById('orderStatus').classList.remove('hidden');
+        }
+
+        // Update progress bar and steps
+        function updateProgress(percent, status) {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percent + '%';
+            
+            // Reset all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
             });
             
-            window.location.href = `${paymentPage}?${params}`;
+            // Update steps based on progress
+            if (percent >= 20) {
+                document.getElementById('step1').classList.add('completed');
+            }
             
-        } catch (error) {
-            alert('❌ Error creating order. Please try again.');
-            completeOrderBtn.innerHTML = 'Complete Order';
-            completeOrderBtn.disabled = false;
-        }
-    }
-
-    async function handleNextToPayment() {
-        if (!validateOrderForm()) {
-            return;
-        }
-
-        // Verify account before proceeding
-        if (!isAccountVerified) {
-            alert('❌ Please verify your account before proceeding');
-            return;
-        }
-
-        goToStep(2);
-    }
-
-    function validateOrderForm() {
-        const fields = [
-            { element: serviceTypeSelect, message: 'Please select service type' },
-            { element: quantityInput, message: 'Please enter valid quantity', check: () => parseInt(quantityInput.value) > 0 },
-            { element: usernameInput, message: 'Please enter username' },
-            { element: emailInput, message: 'Please enter valid email', check: () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value) },
-            { element: phoneInput, message: 'Please enter valid Pakistani phone number', check: () => /^(\+92|0)[0-9]{9,10}$/.test(phoneInput.value.replace(/[\s+-]/g, '')) }
-        ];
-
-        for (let field of fields) {
-            if (!field.element.value || (field.check && !field.check())) {
-                alert('❌ ' + field.message);
-                field.element.focus();
-                return false;
+            if (percent >= 40) {
+                document.getElementById('step2').classList.add('completed');
+            }
+            
+            if (percent >= 60) {
+                document.getElementById('step3').classList.add('completed');
+                document.getElementById('step4').classList.add('active');
+            } else {
+                document.getElementById('step3').classList.add('active');
+            }
+            
+            if (percent >= 80) {
+                document.getElementById('step4').classList.add('completed');
+                document.getElementById('step5').classList.add('active');
+            }
+            
+            if (percent >= 100) {
+                document.getElementById('step5').classList.add('completed');
+            }
+            
+            // Special handling for failed status
+            if (status === 'failed') {
+                progressBar.style.background = 'var(--danger)';
+                document.querySelectorAll('.step').forEach(step => {
+                    step.classList.remove('active', 'completed');
+                });
+                document.getElementById('step1').classList.add('completed');
+                document.getElementById('step2').classList.add('completed');
             }
         }
 
-        return true;
-    }
+        // Show order not found message
+        function showOrderNotFound() {
+            document.getElementById('orderNotFound').classList.remove('hidden');
+        }
 
-    // Helper functions
-    function showAccountVerificationStatus(message, type) {
-        clearAccountVerificationStatus();
-        const statusDiv = document.createElement('div');
-        statusDiv.className = `verification-status ${type}`;
-        statusDiv.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-spinner fa-spin'}"></i> ${message}`;
-        usernameInput.parentNode.appendChild(statusDiv);
-    }
+        // Reset search form
+        function resetSearch() {
+            document.getElementById('orderIdInput').value = '';
+            document.getElementById('orderIdInput').focus();
+            document.getElementById('orderNotFound').classList.add('hidden');
+            document.getElementById('orderStatus').classList.add('hidden');
+        }
 
-    function clearAccountVerificationStatus() {
-        const existing = usernameInput.parentNode.querySelector('.verification-status');
-        if (existing) existing.remove();
-    }
-</script>
+        // Test backend connection
+        async function testBackend() {
+            try {
+                const response = await fetch(`${API_BASE}/test`);
+                const text = await response.text();
+                console.log('✅ Backend connected:', text);
+                
+                try {
+                    const data = JSON.parse(text);
+                    console.log('✅ Backend JSON:', data);
+                } catch {
+                    console.log('✅ Backend Text:', text);
+                }
+                
+            } catch (error) {
+                console.error('❌ Backend connection failed:', error);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            testBackend();
+        });
+    </script>
 </body>
 </html>
