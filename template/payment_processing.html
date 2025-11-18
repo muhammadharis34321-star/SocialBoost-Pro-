@@ -561,7 +561,7 @@
                     <p>You will receive updates on your registered email.</p>
                 </div>
 
-                <button class="btn btn-success" onclick="redirectToOrderTracking()">
+                <button class="btn btn-success" onclick="redirectToSuccess()">
                     <i class="fas fa-external-link-alt"></i> View Order Status
                 </button>
             </div>
@@ -867,7 +867,7 @@
 
             // Auto redirect after 5 seconds
             setTimeout(() => {
-                redirectToOrderTracking();
+                redirectToSuccess(transactionId);
             }, 5000);
         }
 
@@ -890,22 +890,23 @@
             if (progressInterval) clearInterval(progressInterval);
         }
 
-        // ✅ REDIRECT TO ORDER TRACKING PAGE
-        function redirectToOrderTracking() {
-            console.log("Redirecting to order tracking page");
+        // Redirect to success page
+        function redirectToSuccess(transactionId) {
+            const finalTransactionId = transactionId || `AUTO_${orderId}`;
+            console.log("Redirecting to success page");
             
-            // Build tracking URL with order ID
-            const trackingUrl = `track-order.html?order_id=${orderId}`;
+            // Build success URL with all parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const successUrl = `/payment-success?order_id=${orderId}&transaction_id=${finalTransactionId}`;
             
             // Add all existing parameters to maintain state
-            const urlParams = new URLSearchParams(window.location.search);
             for (const [key, value] of urlParams) {
                 if (key !== 'order_id') {
-                    trackingUrl += `&${key}=${value}`;
+                    successUrl += `&${key}=${value}`;
                 }
             }
             
-            window.location.href = trackingUrl;
+            window.location.href = successUrl;
         }
 
         // Retry verification
@@ -966,7 +967,7 @@
         });
 
         // Global functions for buttons
-        window.redirectToOrderTracking = redirectToOrderTracking;
+        window.redirectToSuccess = redirectToSuccess;
         window.retryVerification = retryVerification;
         window.contactSupport = contactSupport;
     </script>
