@@ -1042,6 +1042,16 @@
       </div>
     </footer>
     <script>
+      // Absolute URLs - PythonAnywhere backend ka URL
+const BACKEND_URL = 'https://python22.pythonanywhere.com';
+
+fetch(BACKEND_URL + '/api/create-order', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(orderData)
+})
       // Mobile Menu Toggle
       document
         .getElementById("mobile-menu")
