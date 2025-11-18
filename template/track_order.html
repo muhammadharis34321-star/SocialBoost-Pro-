@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Your Order - SocialBoost Pro</title>
     <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/3133/3133301.png">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -12,7 +13,6 @@
             --secondary: #2575fc;
             --success: #00c851;
             --warning: #ffbb33;
-            --danger: #ff4444;
             --dark: #1a1a2e;
             --light: #f8f9fa;
             --border-radius: 12px;
@@ -25,27 +25,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-        .fa-spin {
-    animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.step.active .step-icon .fa-cog {
-    animation: spin 2s linear infinite;
-}
-
-.step.active .step-icon .fa-rocket {
-    animation: bounce 1s ease-in-out infinite alternate;
-}
-
-@keyframes bounce {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-5px); }
-}
         
         body {
             font-family: 'Poppins', sans-serif;
@@ -122,7 +101,6 @@
         
         .search-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
         }
         
         .order-status {
@@ -134,7 +112,7 @@
         
         .status-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: between;
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
@@ -147,23 +125,12 @@
         }
         
         .status-badge {
+            background: var(--success);
             color: white;
             padding: 8px 16px;
             border-radius: 20px;
             font-weight: 600;
             font-size: 14px;
-        }
-        
-        .status-processing {
-            background: var(--warning);
-        }
-        
-        .status-completed {
-            background: var(--success);
-        }
-        
-        .status-failed {
-            background: var(--danger);
         }
         
         .progress-tracker {
@@ -251,43 +218,6 @@
             margin: 30px 0;
         }
         
-        .order-details {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            margin: 20px 0;
-        }
-        
-        .order-details h3 {
-            margin-bottom: 15px;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .detail-item {
-            padding: 12px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-        
-        .detail-item strong {
-            color: var(--primary);
-            display: block;
-            margin-bottom: 5px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
         .order-actions {
             display: flex;
             gap: 15px;
@@ -323,32 +253,8 @@
             transform: translateY(-2px);
         }
         
-        .btn-primary:hover {
-            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
-        }
-        
         .hidden {
             display: none;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 30px;
-        }
-        
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
         
         @media (max-width: 768px) {
@@ -378,16 +284,6 @@
             .order-actions {
                 flex-direction: column;
             }
-            
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .status-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
         }
     </style>
 </head>
@@ -404,16 +300,9 @@
                 <input type="text" class="search-input" id="orderIdInput" 
                        placeholder="Enter your Order ID (e.g., SB20251117112725652)" required>
                 <button type="submit" class="search-btn">
-                    <i class="fas fa-search"></i> Track Order
+                    <i class="fas fa-search"></i> Track
                 </button>
             </form>
-        </div>
-        
-        <div id="loadingState" class="order-status hidden">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <p>Searching for your order...</p>
-            </div>
         </div>
         
         <div id="orderStatus" class="order-status hidden">
@@ -427,25 +316,25 @@
             
             <div class="progress-tracker">
                 <div class="progress-steps">
-                    <div class="progress-bar" id="progressBar"></div>
+                    <div class="progress-bar" id="progressBar" style="width: 50%;"></div>
                     
                     <div class="step completed" id="step1">
                         <div class="step-icon">
-                            <i class="fas fa-shopping-cart"></i>
+                            <i class="fas fa-check"></i>
                         </div>
                         <div class="step-text">Order Placed</div>
                     </div>
                     
                     <div class="step completed" id="step2">
                         <div class="step-icon">
-                            <i class="fas fa-credit-card"></i>
+                            <i class="fas fa-check"></i>
                         </div>
                         <div class="step-text">Payment Verified</div>
                     </div>
                     
                     <div class="step active" id="step3">
                         <div class="step-icon">
-                            <i class="fas fa-cog"></i>
+                            <i class="fas fa-cog fa-spin"></i>
                         </div>
                         <div class="step-text">Processing</div>
                     </div>
@@ -473,8 +362,8 @@
             </div>
             
             <div class="order-details">
-                <h3><i class="fas fa-receipt"></i> Order Details</h3>
-                <div class="detail-grid" id="orderDetails">
+                <h3>Order Details</h3>
+                <div id="orderDetails">
                     <!-- Order details will be loaded here -->
                 </div>
             </div>
@@ -504,314 +393,66 @@
     </div>
 
     <script>
-        // ✅ BACKEND API CONFIGURATION
-        const API_BASE = 'https://python22.pythonanywhere.com';
-
-        // Check if order ID is passed in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const orderIdFromUrl = urlParams.get('order_id');
-        
-        // Auto-fill order ID if passed in URL
-        if (orderIdFromUrl) {
-            document.getElementById('orderIdInput').value = orderIdFromUrl;
-            // Auto-track the order
-            setTimeout(() => {
-                trackOrderFromUrl();
-            }, 500);
-        }
-
-        // Track order from form submission
         function trackOrder(event) {
             event.preventDefault();
-            
-            const orderIdInput = document.getElementById('orderIdInput');
-            const orderId = orderIdInput.value.trim();
+            const orderId = document.getElementById('orderIdInput').value.trim();
             
             if (!orderId) {
                 alert('Please enter an Order ID');
                 return;
             }
             
-            // Show loading state
-            document.getElementById('loadingState').classList.remove('hidden');
+            // Simulate API call
+            simulateOrderLookup(orderId);
+        }
+        
+        function simulateOrderLookup(orderId) {
+            // Show loading
             document.getElementById('orderStatus').classList.add('hidden');
             document.getElementById('orderNotFound').classList.add('hidden');
             
-            // Simulate API call delay
             setTimeout(() => {
-                fetchOrderDetails(orderId);
-            }, 1500);
-        }
-
-        // Track order from URL parameter
-        function trackOrderFromUrl() {
-            const orderId = orderIdFromUrl;
-            
-            if (!orderId) return;
-            
-            // Show loading state
-            document.getElementById('loadingState').classList.remove('hidden');
-            document.getElementById('orderStatus').classList.add('hidden');
-            document.getElementById('orderNotFound').classList.add('hidden');
-            
-            // Simulate API call delay
-            setTimeout(() => {
-                fetchOrderDetails(orderId);
-            }, 1500);
-        }
-
-        // Fetch order details from API
-        async function fetchOrderDetails(orderId) {
-            try {
-                // In a real implementation, you would call your backend API
-                // const response = await fetch(`${API_BASE}/api/orders/${orderId}`);
-                // const orderData = await response.json();
-                
-                // For demo purposes, we'll simulate API response
-                const orderData = simulateOrderData(orderId);
-                
-                // Hide loading state
-                document.getElementById('loadingState').classList.add('hidden');
-                
-                if (orderData) {
-                    displayOrderStatus(orderData);
+                // For demo - assume order exists if it starts with "SB"
+                if (orderId.startsWith('SB')) {
+                    displayOrderStatus(orderId);
                 } else {
                     showOrderNotFound();
                 }
-            } catch (error) {
-                console.error('Error fetching order details:', error);
-                document.getElementById('loadingState').classList.add('hidden');
-                showOrderNotFound();
-            }
+            }, 1000);
         }
-
-        // Simulate order data for demo
-        function simulateOrderData(orderId) {
-            // In a real implementation, this would come from your backend
-            const orders = {
-                'SB20251117112725652': {
-                    id: 'SB20251117112725652',
-                    date: 'November 17, 2025',
-                    status: 'processing', // processing, completed, failed
-                    progress: 50, // percentage of progress
-                    platform: 'TikTok',
-                    service: 'Followers',
-                    quantity: '1000',
-                    amount: '2800 PKR',
-                    username: '@socialuser',
-                    email: 'user@example.com',
-                    phone: '+92 300 1234567',
-                    estimatedCompletion: 'November 18, 2025, 02:30 PM'
-                },
-                'SB20251118143045981': {
-                    id: 'SB20251118143045981',
-                    date: 'November 18, 2025',
-                    status: 'completed',
-                    progress: 100,
-                    platform: 'Instagram',
-                    service: 'Likes',
-                    quantity: '500',
-                    amount: '500 PKR',
-                    username: '@instagramuser',
-                    email: 'user2@example.com',
-                    phone: '+92 301 2345678',
-                    estimatedCompletion: 'Completed on November 18, 2025, 10:15 AM'
-                },
-                'SB20251119112032876': {
-                    id: 'SB20251119112032876',
-                    date: 'November 19, 2025',
-                    status: 'failed',
-                    progress: 30,
-                    platform: 'YouTube',
-                    service: 'Subscribers',
-                    quantity: '1000',
-                    amount: '4000 PKR',
-                    username: 'youtuberchannel',
-                    email: 'user3@example.com',
-                    phone: '+92 302 3456789',
-                    estimatedCompletion: 'On hold - Please contact support'
-                }
-            };
-            
-            // Auto-generate order data for any SB order ID
-            if (orderId.startsWith('SB')) {
-                // Generate random order data for demo
-                const platforms = ['TikTok', 'Instagram', 'YouTube', 'Facebook'];
-                const services = ['Followers', 'Likes', 'Views', 'Subscribers'];
-                const statuses = ['processing', 'completed', 'failed'];
-                
-                const randomPlatform = platforms[Math.floor(Math.random() * platforms.length)];
-                const randomService = services[Math.floor(Math.random() * services.length)];
-                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                const randomProgress = randomStatus === 'completed' ? 100 : 
-                                     randomStatus === 'failed' ? 30 : 
-                                     Math.floor(Math.random() * 40) + 40;
-                
-                return {
-                    id: orderId,
-                    date: new Date().toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    }),
-                    status: randomStatus,
-                    progress: randomProgress,
-                    platform: randomPlatform,
-                    service: randomService,
-                    quantity: Math.floor(Math.random() * 5000) + 100,
-                    amount: (Math.floor(Math.random() * 10000) + 500) + ' PKR',
-                    username: '@user' + Math.floor(Math.random() * 1000),
-                    email: 'user' + Math.floor(Math.random() * 1000) + '@example.com',
-                    phone: '+92 300 ' + Math.floor(Math.random() * 10000000).toString().padStart(7, '0'),
-                    estimatedCompletion: randomStatus === 'completed' ? 
-                        'Completed on ' + new Date().toLocaleString() : 
-                        'Expected by ' + new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleString()
-                };
-            }
-            
-            return orders[orderId] || null;
-        }
-
-        // Display order status
-        function displayOrderStatus(orderData) {
-            // Update order info
-            document.getElementById('displayOrderId').textContent = orderData.id;
-            document.getElementById('orderDate').textContent = orderData.date;
-            
-            // Update status badge
-            const statusBadge = document.getElementById('statusBadge');
-            statusBadge.textContent = orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1);
-            statusBadge.className = 'status-badge';
-            
-            if (orderData.status === 'processing') {
-                statusBadge.classList.add('status-processing');
-            } else if (orderData.status === 'completed') {
-                statusBadge.classList.add('status-completed');
-            } else if (orderData.status === 'failed') {
-                statusBadge.classList.add('status-failed');
-            }
-            
-            // Update progress
-            updateProgress(orderData.progress, orderData.status);
-            
-            // Update completion time
-            document.getElementById('completionTime').textContent = orderData.estimatedCompletion;
-            
-            // Update order details
-            const orderDetails = document.getElementById('orderDetails');
-            orderDetails.innerHTML = `
-                <div class="detail-item">
-                    <strong>Platform</strong>
-                    <span>${orderData.platform}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Service</strong>
-                    <span>${orderData.service}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Quantity</strong>
-                    <span>${orderData.quantity}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Amount</strong>
-                    <span>${orderData.amount}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Username</strong>
-                    <span>${orderData.username}</span>
-                </div>
-                <div class="detail-item">
-                    <strong>Contact Email</strong>
-                    <span>${orderData.email}</span>
-                </div>
-            `;
-            
-            // Show order status
+        
+        function displayOrderStatus(orderId) {
+            document.getElementById('displayOrderId').textContent = orderId;
             document.getElementById('orderStatus').classList.remove('hidden');
+            
+            // Set completion time
+            const now = new Date();
+            const completionTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+            document.getElementById('completionTime').textContent = 
+                'Expected by: ' + completionTime.toLocaleString();
         }
-
-        // Update progress bar and steps
-        function updateProgress(percent, status) {
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = percent + '%';
-            
-            // Reset all steps
-            document.querySelectorAll('.step').forEach(step => {
-                step.classList.remove('active', 'completed');
-            });
-            
-            // Update steps based on progress
-            if (percent >= 20) {
-                document.getElementById('step1').classList.add('completed');
-            }
-            
-            if (percent >= 40) {
-                document.getElementById('step2').classList.add('completed');
-            }
-            
-            if (percent >= 60) {
-                document.getElementById('step3').classList.add('completed');
-                document.getElementById('step4').classList.add('active');
-            } else {
-                document.getElementById('step3').classList.add('active');
-            }
-            
-            if (percent >= 80) {
-                document.getElementById('step4').classList.add('completed');
-                document.getElementById('step5').classList.add('active');
-            }
-            
-            if (percent >= 100) {
-                document.getElementById('step5').classList.add('completed');
-            }
-            
-            // Special handling for failed status
-            if (status === 'failed') {
-                progressBar.style.background = 'var(--danger)';
-                document.querySelectorAll('.step').forEach(step => {
-                    step.classList.remove('active', 'completed');
-                });
-                document.getElementById('step1').classList.add('completed');
-                document.getElementById('step2').classList.add('completed');
-            }
-        }
-
-        // Show order not found message
+        
         function showOrderNotFound() {
             document.getElementById('orderNotFound').classList.remove('hidden');
         }
-
-        // Reset search form
+        
         function resetSearch() {
             document.getElementById('orderIdInput').value = '';
-            document.getElementById('orderIdInput').focus();
-            document.getElementById('orderNotFound').classList.add('hidden');
             document.getElementById('orderStatus').classList.add('hidden');
+            document.getElementById('orderNotFound').classList.add('hidden');
+            document.getElementById('orderIdInput').focus();
         }
-
-        // Test backend connection
-        async function testBackend() {
-            try {
-                const response = await fetch(`${API_BASE}/test`);
-                const text = await response.text();
-                console.log('✅ Backend connected:', text);
-                
-                try {
-                    const data = JSON.parse(text);
-                    console.log('✅ Backend JSON:', data);
-                } catch {
-                    console.log('✅ Backend Text:', text);
-                }
-                
-            } catch (error) {
-                console.error('❌ Backend connection failed:', error);
-            }
+        
+        // Auto-focus on input
+        document.getElementById('orderIdInput').focus();
+        
+        // If order_id is in URL, auto-track
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderIdFromUrl = urlParams.get('order_id');
+        if (orderIdFromUrl) {
+            document.getElementById('orderIdInput').value = orderIdFromUrl;
+            simulateOrderLookup(orderIdFromUrl);
         }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            testBackend();
-        });
     </script>
 </body>
 </html>
