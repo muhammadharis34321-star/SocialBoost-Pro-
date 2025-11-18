@@ -925,269 +925,7 @@
     let isAccountVerified = false;
     let isPaymentAccountVerified = false;
 
-    // Initialize when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeForm();
-        setupRealTimeValidation();
-        setupEventListeners();
-    });
-
-    function initializeForm() {
-        // Set platform badge
-        platformBadge.textContent = currentPlatform;
-        platformBadge.className = 'platform-badge';
-
-        if (currentPlatform === 'TikTok') {
-            platformBadge.classList.add('badge-tiktok');
-        } else if (currentPlatform === 'Instagram') {
-            platformBadge.classList.add('badge-instagram');
-        } else if (currentPlatform === 'YouTube') {
-            platformBadge.classList.add('badge-youtube');
-        } else if (currentPlatform === 'Monetize') {
-            platformBadge.classList.add('badge-monetize');
-            addMonetizationInfo();
-        }
-
-        // Update service types
-        updateServiceTypes(currentPlatform);
-
-        // Pre-fill values from URL
-        if (service) serviceTypeSelect.value = service;
-        if (quantity) quantityInput.value = quantity;
-
-        // Adjust form for monetization
-        adjustFormForMonetization();
-
-        // Update summary
-        updateOrderSummary();
-
-        console.log('✅ Form initialized successfully');
-    }
-
-    function setupRealTimeValidation() {
-        // Account verification
-        setupAccountVerification();
-        
-        // Payment account verification
-        setupPaymentAccountVerification();
-        
-        // Auto price updates
-        setupAutoPriceUpdates();
-    }
-
-    function setupEventListeners() {
-        // Next to Payment button
-        if (nextToPaymentBtn) {
-            nextToPaymentBtn.addEventListener('click', handleNextToPayment);
-        }
-
-        // Payment method selection
-        paymentOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                paymentOptions.forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedPaymentMethod = this.getAttribute('data-method');
-            });
-        });
-
-        // Back button
-        if (backToOrderBtn) {
-            backToOrderBtn.addEventListener('click', function() {
-                goToStep(1);
-            });
-        }
-
-        // Complete order button
-        if (completeOrderBtn) {
-            completeOrderBtn.addEventListener('click', handleCompleteOrder);
-        }
-    }
-
-    // Setup auto price update
-    function setupAutoPriceUpdates() {
-        serviceTypeSelect.addEventListener('change', updateOrderSummary);
-        quantityInput.addEventListener('input', updateOrderSummary);
-        usernameInput.addEventListener('input', updateOrderSummary);
-    }
-
-    // Add monetization information box
-    function addMonetizationInfo() {
-        const formHeader = document.querySelector('.form-header');
-        const infoBox = document.createElement('div');
-        infoBox.className = 'monetization-info';
-        infoBox.innerHTML = `
-            <h4><i class="fas fa-check-circle"></i> YouTube Monetization Package</h4>
-            <p><strong>Complete monetization solution including:</strong></p>
-            <ul class="monetization-features">
-                <li><i class="fas fa-check"></i> 4000 Watch Hours</li>
-                <li><i class="fas fa-check"></i> 1000 Subscribers</li>
-                <li><i class="fas fa-check"></i> Channel Review & Optimization</li>
-                <li><i class="fas fa-check"></i> Adsense Approval Support</li>
-                <li><i class="fas fa-check"></i> 30 Days Support</li>
-            </ul>
-        `;
-        formHeader.parentNode.insertBefore(infoBox, formHeader.nextSibling);
-    }
-
-    // Monetization form adjustment
-    function adjustFormForMonetization() {
-        if (currentPlatform === 'Monetize') {
-            // Hide quantity field
-            const quantityGroup = document.querySelector('.form-group:has(#quantity)');
-            if (quantityGroup) quantityGroup.style.display = 'none';
-
-            // Set fixed quantity
-            quantityInput.value = '1';
-            quantityInput.disabled = true;
-
-            // Hide service type dropdown (only monetization available)
-            const serviceTypeGroup = document.querySelector('.form-group:has(#serviceType)');
-            if (serviceTypeGroup) serviceTypeGroup.style.display = 'none';
-
-            // Add extra fields for monetization
-            addMonetizationFields();
-        }
-    }
-
-    // Add extra fields for YouTube Monetization
-    function addMonetizationFields() {
-        const form = document.getElementById('orderForm');
-
-        // Channel URL Field
-        const channelUrlGroup = document.createElement('div');
-        channelUrlGroup.className = 'form-group';
-        channelUrlGroup.innerHTML = `
-            <label for="channelUrl">YouTube Channel URL</label>
-            <input type="url" id="channelUrl" placeholder="https://www.youtube.com/@yourchannel" required>
-        `;
-
-        // Current Subscribers Field
-        const subscribersGroup = document.createElement('div');
-        subscribersGroup.className = 'form-group';
-        subscribersGroup.innerHTML = `
-            <label for="currentSubscribers">Current Subscribers Count</label>
-            <input type="number" id="currentSubscribers" min="0" placeholder="Enter current subscribers" required>
-        `;
-
-        // Channel Category Field
-        const categoryGroup = document.createElement('div');
-        categoryGroup.className = 'form-group';
-        categoryGroup.innerHTML = `
-            <label for="channelCategory">Channel Category</label>
-            <select id="channelCategory" required>
-                <option value="">Select Category</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="education">Education</option>
-                <option value="gaming">Gaming</option>
-                <option value="music">Music</option>
-                <option value="vlogs">Vlogs & Lifestyle</option>
-                <option value="tech">Technology</option>
-                <option value="cooking">Cooking & Food</option>
-                <option value="fitness">Fitness & Health</option>
-                <option value="travel">Travel</option>
-                <option value="other">Other</option>
-            </select>
-        `;
-
-        // Insert new fields after username field
-        const usernameGroup = document.querySelector('.form-group:has(#username)');
-        usernameGroup.parentNode.insertBefore(channelUrlGroup, usernameGroup.nextSibling);
-        usernameGroup.parentNode.insertBefore(subscribersGroup, channelUrlGroup.nextSibling);
-        usernameGroup.parentNode.insertBefore(categoryGroup, subscribersGroup.nextSibling);
-
-        // Update labels for monetization
-        const usernameLabel = usernameGroup.querySelector('label');
-        usernameLabel.textContent = 'Channel Name / Username';
-
-        const usernameInput = document.getElementById('username');
-        usernameInput.placeholder = 'e.g., @yourchannelname';
-    }
-
-    // Update service types based on platform
-    function updateServiceTypes(platform) {
-        // Reset and show relevant options
-        const options = serviceTypeSelect.querySelectorAll('option');
-        options.forEach(option => {
-            option.style.display = 'none';
-        });
-
-        if (platform === 'TikTok' || platform === 'Instagram') {
-            document.querySelector('option[value="followers"]').style.display = 'block';
-            document.querySelector('option[value="likes"]').style.display = 'block';
-        } else if (platform === 'YouTube') {
-            subscribersOption.style.display = 'block';
-        } else if (platform === 'Monetize') {
-            monetizationOption.style.display = 'block';
-        }
-    }
-
-    // Update order summary
-    function updateOrderSummary() {
-        const serviceType = serviceTypeSelect.value;
-        const quantity = parseInt(quantityInput.value) || 0;
-        const username = usernameInput.value || '-';
-
-        document.getElementById('summaryService').textContent = currentPlatform;
-
-        if (serviceType === 'followers' && currentPlatform === 'YouTube') {
-            document.getElementById('summaryType').textContent = 'Subscribers';
-        } else if (serviceType === 'monetization') {
-            document.getElementById('summaryType').textContent = 'Full Monetization';
-        } else {
-            document.getElementById('summaryType').textContent = serviceType;
-        }
-
-        document.getElementById('summaryQuantity').textContent = quantity;
-        document.getElementById('summaryUsername').textContent = username;
-
-        // Calculate price
-        let price = 0;
-
-        if (serviceType && quantity > 0) {
-            const servicePricing = pricing[currentPlatform][serviceType];
-
-            // Check for predefined packages
-            if (servicePricing[quantity]) {
-                price = servicePricing[quantity];
-            } else {
-                // Calculate based on default rate
-                price = Math.round(quantity * servicePricing.default);
-            }
-        }
-
-        document.getElementById('summaryTotal').textContent = price.toLocaleString() + ' PKR';
-    }
-
-    // Navigate to next step
-    function goToStep(stepNumber) {
-        // Hide all steps
-        formStep1.classList.remove('active');
-        formStep2.classList.remove('active');
-        formStep3.classList.remove('active');
-        step1.classList.remove('active', 'completed');
-        step2.classList.remove('active', 'completed');
-        step3.classList.remove('active', 'completed');
-
-        // Show current step and update progress
-        if (stepNumber === 1) {
-            formStep1.classList.add('active');
-            step1.classList.add('active');
-        } else if (stepNumber === 2) {
-            formStep2.classList.add('active');
-            step1.classList.add('completed');
-            step2.classList.add('active');
-        } else if (stepNumber === 3) {
-            formStep3.classList.add('active');
-            step1.classList.add('completed');
-            step2.classList.add('completed');
-            step3.classList.add('active');
-
-            // Generate random order ID
-            document.getElementById('orderId').textContent = Math.floor(10000 + Math.random() * 90000);
-        }
-    }
-
-    // REAL-TIME ACCOUNT VERIFICATION
+    // ✅ ACCOUNT VERIFICATION SYSTEM - REAL-TIME VALIDATION
     function setupAccountVerification() {
         const usernameInput = document.getElementById('username');
         const channelUrlInput = document.getElementById('channelUrl');
@@ -1206,6 +944,7 @@
             } else {
                 clearAccountVerificationStatus();
                 isAccountVerified = false;
+                clearVerificationBadge();
             }
         };
 
@@ -1230,22 +969,22 @@
             const data = await response.json();
 
             if (data.valid) {
-                showAccountVerificationStatus(' ' + data.message, 'success');
+                showAccountVerificationStatus('✅ ' + data.message, 'success');
                 isAccountVerified = true;
                 addVerificationBadge();
             } else {
-                showAccountVerificationStatus(' ' + data.message, 'error');
+                showAccountVerificationStatus('❌ ' + data.message, 'error');
                 isAccountVerified = false;
                 clearVerificationBadge();
             }
         } catch (error) {
-            showAccountVerificationStatus(' Verification failed', 'error');
+            showAccountVerificationStatus('❌ Verification failed - Network error', 'error');
             isAccountVerified = false;
             clearVerificationBadge();
         }
     }
 
-    // REAL-TIME PAYMENT ACCOUNT VERIFICATION
+    // ✅ PAYMENT ACCOUNT VERIFICATION
     function setupPaymentAccountVerification() {
         const phoneInput = document.getElementById('phone');
         if (!phoneInput) return;
@@ -1285,205 +1024,19 @@
             const data = await response.json();
 
             if (data.valid) {
-                showPaymentValidationStatus(' ' + data.message, 'success');
+                showPaymentValidationStatus('✅ ' + data.message, 'success');
                 isPaymentAccountVerified = true;
             } else {
-                showPaymentValidationStatus(' ' + data.message, 'error');
+                showPaymentValidationStatus('❌ ' + data.message, 'error');
                 isPaymentAccountVerified = false;
             }
         } catch (error) {
-            showPaymentValidationStatus('Verification failed', 'error');
+            showPaymentValidationStatus('❌ Verification failed', 'error');
             isPaymentAccountVerified = false;
         }
     }
 
-    // ORDER FORM VALIDATION
-    async function handleNextToPayment() {
-        if (!validateOrderForm()) {
-            return;
-        }
-
-        const button = document.getElementById('nextToPayment');
-        const originalText = button.innerHTML;
-
-        // Show loading
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
-        button.disabled = true;
-
-        try {
-            // Verify account before proceeding
-            if (!isAccountVerified) {
-                const username = document.getElementById('username').value.trim();
-                const channelUrl = document.getElementById('channelUrl')?.value.trim() || '';
-                
-                await verifyAccountRealTime(username, channelUrl);
-                
-                if (!isAccountVerified) {
-                    alert(' Please verify your account before proceeding.');
-                    return;
-                }
-            }
-
-            // Verify payment account
-            const phoneNumber = document.getElementById('phone').value.trim();
-            const paymentMethod = 'jazzcash';
-            
-            await verifyPaymentAccountRealTime(phoneNumber, paymentMethod);
-            
-            if (!isPaymentAccountVerified) {
-                alert(' Please use a valid payment account number.');
-                return;
-            }
-
-            // If all validations pass, proceed to payment
-            goToStep(2);
-            
-        } catch (error) {
-            alert(' Something went wrong. Please try again.');
-        } finally {
-            button.innerHTML = originalText;
-            button.disabled = false;
-        }
-    }
-
-    function validateOrderForm() {
-        const serviceType = serviceTypeSelect.value;
-        const quantity = parseInt(quantityInput.value);
-        const username = usernameInput.value.trim();
-        const email = emailInput.value.trim();
-        const phone = phoneInput.value.trim();
-        
-        if (!serviceType) {
-            alert(' Please select service type');
-            serviceTypeSelect.focus();
-            return false;
-        }
-        
-        if (!quantity || quantity < 1) {
-            alert(' Please enter valid quantity');
-            quantityInput.focus();
-            return false;
-        }
-        
-        if (!username) {
-            alert(' Please enter username');
-            usernameInput.focus();
-            return false;
-        }
-
-        // Additional validation for YouTube/Monetize
-        if (currentPlatform === 'YouTube' || currentPlatform === 'Monetize') {
-            const channelUrl = document.getElementById('channelUrl') ? document.getElementById('channelUrl').value : '';
-            if (!channelUrl) {
-                alert(' Please enter YouTube channel URL');
-                document.getElementById('channelUrl').focus();
-                return false;
-            }
-            
-            if (!channelUrl.includes('youtube.com') && !channelUrl.includes('youtu.be')) {
-                alert(' Please enter valid YouTube channel URL');
-                document.getElementById('channelUrl').focus();
-                return false;
-            }
-        }
-        
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert(' Please enter valid email address');
-            emailInput.focus();
-            return false;
-        }
-        
-        // Phone validation (Pakistani format)
-        const phoneRegex = /^(\+92|0)[0-9]{9,10}$/;
-        const cleanPhone = phone.replace(/[\s+-]/g, '');
-        if (!phoneRegex.test(cleanPhone)) {
-            alert('Please enter valid Pakistani phone number (e.g., 03001234567 or +923001234567)');
-            phoneInput.focus();
-            return false;
-        }
-
-        // Additional validation for Monetization
-        if (currentPlatform === 'Monetize') {
-            const currentSubscribers = document.getElementById('currentSubscribers') ? document.getElementById('currentSubscribers').value : '';
-            const channelCategory = document.getElementById('channelCategory') ? document.getElementById('channelCategory').value : '';
-            
-            if (!currentSubscribers || currentSubscribers < 0) {
-                alert(' Please enter current subscribers count');
-                document.getElementById('currentSubscribers').focus();
-                return false;
-            }
-            
-            if (!channelCategory) {
-                alert(' Please select channel category');
-                document.getElementById('channelCategory').focus();
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
-    // COMPLETE ORDER HANDLER
-    async function handleCompleteOrder() {
-        if (!selectedPaymentMethod) {
-            alert(' Please select a payment method');
-            return;
-        }
-
-        // Collect all form data
-        const formData = {
-            platform: currentPlatform,
-            service_type: serviceTypeSelect.value,
-            quantity: parseInt(quantityInput.value),
-            username: usernameInput.value,
-            email: emailInput.value,
-            phone: phoneInput.value,
-            payment_method: selectedPaymentMethod,
-            notes: document.getElementById('notes').value
-        };
-
-        // Add monetization specific fields
-        if (currentPlatform === 'Monetize') {
-            formData.channel_url = document.getElementById('channelUrl').value;
-            formData.current_subscribers = parseInt(document.getElementById('currentSubscribers').value);
-            formData.channel_category = document.getElementById('channelCategory').value;
-        }
-
-        // Add YouTube specific fields
-        if (currentPlatform === 'YouTube') {
-            formData.channel_url = document.getElementById('channelUrl').value;
-        }
-
-        // Show loading
-        completeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Order...';
-        completeOrderBtn.disabled = true;
-
-        try {
-            const response = await fetch(`${API_BASE}/api/create-order`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                // Redirect to payment page
-                window.location.href = data.payment_url;
-            } else {
-                alert(' Error: ' + data.error);
-            }
-        } catch (error) {
-            alert(' Network error. Please try again.');
-        } finally {
-            completeOrderBtn.innerHTML = 'Complete Order';
-            completeOrderBtn.disabled = false;
-        }
-    }
-
-    // HELPER FUNCTIONS
+    // ✅ HELPER FUNCTIONS FOR VERIFICATION
     function showAccountVerificationStatus(message, type) {
         clearAccountVerificationStatus();
         
@@ -1565,6 +1118,426 @@
             case 'error': return 'fa-exclamation-circle';
             case 'loading': return 'fa-spinner fa-spin';
             default: return 'fa-info-circle';
+        }
+    }
+
+    // ✅ FORM VALIDATION WITH ACCOUNT VERIFICATION
+    async function handleNextToPayment() {
+        if (!validateOrderForm()) {
+            return;
+        }
+
+        const button = document.getElementById('nextToPayment');
+        const originalText = button.innerHTML;
+
+        // Show loading
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+        button.disabled = true;
+
+        try {
+            // Verify account before proceeding
+            if (!isAccountVerified) {
+                const username = document.getElementById('username').value.trim();
+                const channelUrl = document.getElementById('channelUrl')?.value.trim() || '';
+                
+                await verifyAccountRealTime(username, channelUrl);
+                
+                if (!isAccountVerified) {
+                    alert('❌ Please verify your account before proceeding.');
+                    return;
+                }
+            }
+
+            // Verify payment account
+            const phoneNumber = document.getElementById('phone').value.trim();
+            const paymentMethod = 'jazzcash';
+            
+            await verifyPaymentAccountRealTime(phoneNumber, paymentMethod);
+            
+            if (!isPaymentAccountVerified) {
+                alert('❌ Please use a valid payment account number.');
+                return;
+            }
+
+            // If all validations pass, proceed to payment
+            goToStep(2);
+            
+        } catch (error) {
+            alert('❌ Something went wrong. Please try again.');
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+
+    function validateOrderForm() {
+        const serviceType = serviceTypeSelect.value;
+        const quantity = parseInt(quantityInput.value);
+        const username = usernameInput.value.trim();
+        const email = emailInput.value.trim();
+        const phone = phoneInput.value.trim();
+        
+        if (!serviceType) {
+            alert('❌ Please select service type');
+            serviceTypeSelect.focus();
+            return false;
+        }
+        
+        if (!quantity || quantity < 1) {
+            alert('❌ Please enter valid quantity');
+            quantityInput.focus();
+            return false;
+        }
+        
+        if (!username) {
+            alert('❌ Please enter username');
+            usernameInput.focus();
+            return false;
+        }
+
+        // Additional validation for YouTube/Monetize
+        if (currentPlatform === 'YouTube' || currentPlatform === 'Monetize') {
+            const channelUrl = document.getElementById('channelUrl') ? document.getElementById('channelUrl').value : '';
+            if (!channelUrl) {
+                alert('❌ Please enter YouTube channel URL');
+                document.getElementById('channelUrl').focus();
+                return false;
+            }
+            
+            if (!channelUrl.includes('youtube.com') && !channelUrl.includes('youtu.be')) {
+                alert('❌ Please enter valid YouTube channel URL');
+                document.getElementById('channelUrl').focus();
+                return false;
+            }
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('❌ Please enter valid email address');
+            emailInput.focus();
+            return false;
+        }
+        
+        // Phone validation (Pakistani format)
+        const phoneRegex = /^(\+92|0)[0-9]{9,10}$/;
+        const cleanPhone = phone.replace(/[\s+-]/g, '');
+        if (!phoneRegex.test(cleanPhone)) {
+            alert('❌ Please enter valid Pakistani phone number (e.g., 03001234567 or +923001234567)');
+            phoneInput.focus();
+            return false;
+        }
+
+        // Additional validation for Monetization
+        if (currentPlatform === 'Monetize') {
+            const currentSubscribers = document.getElementById('currentSubscribers') ? document.getElementById('currentSubscribers').value : '';
+            const channelCategory = document.getElementById('channelCategory') ? document.getElementById('channelCategory').value : '';
+            
+            if (!currentSubscribers || currentSubscribers < 0) {
+                alert('❌ Please enter current subscribers count');
+                document.getElementById('currentSubscribers').focus();
+                return false;
+            }
+            
+            if (!channelCategory) {
+                alert('❌ Please select channel category');
+                document.getElementById('channelCategory').focus();
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    // ✅ INITIALIZATION
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeForm();
+        setupRealTimeValidation();
+        setupEventListeners();
+    });
+
+    function initializeForm() {
+        // Set platform badge
+        platformBadge.textContent = currentPlatform;
+        platformBadge.className = 'platform-badge';
+
+        if (currentPlatform === 'TikTok') {
+            platformBadge.classList.add('badge-tiktok');
+        } else if (currentPlatform === 'Instagram') {
+            platformBadge.classList.add('badge-instagram');
+        } else if (currentPlatform === 'YouTube') {
+            platformBadge.classList.add('badge-youtube');
+        } else if (currentPlatform === 'Monetize') {
+            platformBadge.classList.add('badge-monetize');
+            addMonetizationInfo();
+        }
+
+        // Update service types
+        updateServiceTypes(currentPlatform);
+
+        // Pre-fill values from URL
+        if (service) serviceTypeSelect.value = service;
+        if (quantity) quantityInput.value = quantity;
+
+        // Adjust form for monetization
+        adjustFormForMonetization();
+
+        // Update summary
+        updateOrderSummary();
+
+        console.log('✅ Form initialized successfully');
+    }
+
+    function setupRealTimeValidation() {
+        // Account verification
+        setupAccountVerification();
+        
+        // Payment account verification
+        setupPaymentAccountVerification();
+        
+        // Auto price updates
+        setupAutoPriceUpdates();
+    }
+
+    function setupEventListeners() {
+        // Next to Payment button
+        if (nextToPaymentBtn) {
+            nextToPaymentBtn.addEventListener('click', handleNextToPayment);
+        }
+
+        // Payment method selection
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedPaymentMethod = this.getAttribute('data-method');
+            });
+        });
+
+        // Back button
+        if (backToOrderBtn) {
+            backToOrderBtn.addEventListener('click', function() {
+                goToStep(1);
+            });
+        }
+
+        // Complete order button
+        if (completeOrderBtn) {
+            completeOrderBtn.addEventListener('click', handleCompleteOrder);
+        }
+    }
+
+    // ✅ REMAINING FUNCTIONS (unchanged from your original code)
+    function setupAutoPriceUpdates() {
+        serviceTypeSelect.addEventListener('change', updateOrderSummary);
+        quantityInput.addEventListener('input', updateOrderSummary);
+        usernameInput.addEventListener('input', updateOrderSummary);
+    }
+
+    function addMonetizationInfo() {
+        const formHeader = document.querySelector('.form-header');
+        const infoBox = document.createElement('div');
+        infoBox.className = 'monetization-info';
+        infoBox.innerHTML = `
+            <h4><i class="fas fa-check-circle"></i> YouTube Monetization Package</h4>
+            <p><strong>Complete monetization solution including:</strong></p>
+            <ul class="monetization-features">
+                <li><i class="fas fa-check"></i> 4000 Watch Hours</li>
+                <li><i class="fas fa-check"></i> 1000 Subscribers</li>
+                <li><i class="fas fa-check"></i> Channel Review & Optimization</li>
+                <li><i class="fas fa-check"></i> Adsense Approval Support</li>
+                <li><i class="fas fa-check"></i> 30 Days Support</li>
+            </ul>
+        `;
+        formHeader.parentNode.insertBefore(infoBox, formHeader.nextSibling);
+    }
+
+    function adjustFormForMonetization() {
+        if (currentPlatform === 'Monetize') {
+            const quantityGroup = document.querySelector('.form-group:has(#quantity)');
+            if (quantityGroup) quantityGroup.style.display = 'none';
+
+            quantityInput.value = '1';
+            quantityInput.disabled = true;
+
+            const serviceTypeGroup = document.querySelector('.form-group:has(#serviceType)');
+            if (serviceTypeGroup) serviceTypeGroup.style.display = 'none';
+
+            addMonetizationFields();
+        }
+    }
+
+    function addMonetizationFields() {
+        const form = document.getElementById('orderForm');
+
+        const channelUrlGroup = document.createElement('div');
+        channelUrlGroup.className = 'form-group';
+        channelUrlGroup.innerHTML = `
+            <label for="channelUrl">YouTube Channel URL</label>
+            <input type="url" id="channelUrl" placeholder="https://www.youtube.com/@yourchannel" required>
+        `;
+
+        const subscribersGroup = document.createElement('div');
+        subscribersGroup.className = 'form-group';
+        subscribersGroup.innerHTML = `
+            <label for="currentSubscribers">Current Subscribers Count</label>
+            <input type="number" id="currentSubscribers" min="0" placeholder="Enter current subscribers" required>
+        `;
+
+        const categoryGroup = document.createElement('div');
+        categoryGroup.className = 'form-group';
+        categoryGroup.innerHTML = `
+            <label for="channelCategory">Channel Category</label>
+            <select id="channelCategory" required>
+                <option value="">Select Category</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="education">Education</option>
+                <option value="gaming">Gaming</option>
+                <option value="music">Music</option>
+                <option value="vlogs">Vlogs & Lifestyle</option>
+                <option value="tech">Technology</option>
+                <option value="cooking">Cooking & Food</option>
+                <option value="fitness">Fitness & Health</option>
+                <option value="travel">Travel</option>
+                <option value="other">Other</option>
+            </select>
+        `;
+
+        const usernameGroup = document.querySelector('.form-group:has(#username)');
+        usernameGroup.parentNode.insertBefore(channelUrlGroup, usernameGroup.nextSibling);
+        usernameGroup.parentNode.insertBefore(subscribersGroup, channelUrlGroup.nextSibling);
+        usernameGroup.parentNode.insertBefore(categoryGroup, subscribersGroup.nextSibling);
+
+        const usernameLabel = usernameGroup.querySelector('label');
+        usernameLabel.textContent = 'Channel Name / Username';
+
+        const usernameInput = document.getElementById('username');
+        usernameInput.placeholder = 'e.g., @yourchannelname';
+    }
+
+    function updateServiceTypes(platform) {
+        const options = serviceTypeSelect.querySelectorAll('option');
+        options.forEach(option => {
+            option.style.display = 'none';
+        });
+
+        if (platform === 'TikTok' || platform === 'Instagram') {
+            document.querySelector('option[value="followers"]').style.display = 'block';
+            document.querySelector('option[value="likes"]').style.display = 'block';
+        } else if (platform === 'YouTube') {
+            subscribersOption.style.display = 'block';
+        } else if (platform === 'Monetize') {
+            monetizationOption.style.display = 'block';
+        }
+    }
+
+    function updateOrderSummary() {
+        const serviceType = serviceTypeSelect.value;
+        const quantity = parseInt(quantityInput.value) || 0;
+        const username = usernameInput.value || '-';
+
+        document.getElementById('summaryService').textContent = currentPlatform;
+
+        if (serviceType === 'followers' && currentPlatform === 'YouTube') {
+            document.getElementById('summaryType').textContent = 'Subscribers';
+        } else if (serviceType === 'monetization') {
+            document.getElementById('summaryType').textContent = 'Full Monetization';
+        } else {
+            document.getElementById('summaryType').textContent = serviceType;
+        }
+
+        document.getElementById('summaryQuantity').textContent = quantity;
+        document.getElementById('summaryUsername').textContent = username;
+
+        let price = 0;
+
+        if (serviceType && quantity > 0) {
+            const servicePricing = pricing[currentPlatform][serviceType];
+
+            if (servicePricing[quantity]) {
+                price = servicePricing[quantity];
+            } else {
+                price = Math.round(quantity * servicePricing.default);
+            }
+        }
+
+        document.getElementById('summaryTotal').textContent = price.toLocaleString() + ' PKR';
+    }
+
+    function goToStep(stepNumber) {
+        formStep1.classList.remove('active');
+        formStep2.classList.remove('active');
+        formStep3.classList.remove('active');
+        step1.classList.remove('active', 'completed');
+        step2.classList.remove('active', 'completed');
+        step3.classList.remove('active', 'completed');
+
+        if (stepNumber === 1) {
+            formStep1.classList.add('active');
+            step1.classList.add('active');
+        } else if (stepNumber === 2) {
+            formStep2.classList.add('active');
+            step1.classList.add('completed');
+            step2.classList.add('active');
+        } else if (stepNumber === 3) {
+            formStep3.classList.add('active');
+            step1.classList.add('completed');
+            step2.classList.add('completed');
+            step3.classList.add('active');
+
+            document.getElementById('orderId').textContent = Math.floor(10000 + Math.random() * 90000);
+        }
+    }
+
+    async function handleCompleteOrder() {
+        if (!selectedPaymentMethod) {
+            alert('❌ Please select a payment method');
+            return;
+        }
+
+        const formData = {
+            platform: currentPlatform,
+            service_type: serviceTypeSelect.value,
+            quantity: parseInt(quantityInput.value),
+            username: usernameInput.value,
+            email: emailInput.value,
+            phone: phoneInput.value,
+            payment_method: selectedPaymentMethod,
+            notes: document.getElementById('notes').value
+        };
+
+        if (currentPlatform === 'Monetize') {
+            formData.channel_url = document.getElementById('channelUrl').value;
+            formData.current_subscribers = parseInt(document.getElementById('currentSubscribers').value);
+            formData.channel_category = document.getElementById('channelCategory').value;
+        }
+
+        if (currentPlatform === 'YouTube') {
+            formData.channel_url = document.getElementById('channelUrl').value;
+        }
+
+        completeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Order...';
+        completeOrderBtn.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE}/api/create-order`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = data.payment_url;
+            } else {
+                alert('❌ Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('❌ Network error. Please try again.');
+        } finally {
+            completeOrderBtn.innerHTML = 'Complete Order';
+            completeOrderBtn.disabled = false;
         }
     }
 </script>
