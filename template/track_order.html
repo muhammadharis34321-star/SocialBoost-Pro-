@@ -393,6 +393,16 @@
     </div>
 
     <script>
+        const BACKEND_URL = 'https://python22.pythonanywhere.com';
+
+fetch(BACKEND_URL + '/api/create-order', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(orderData)
+})
+   
         function trackOrder(event) {
             event.preventDefault();
             const orderId = document.getElementById('orderIdInput').value.trim();
