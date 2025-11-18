@@ -25,6 +25,27 @@
             padding: 0;
             box-sizing: border-box;
         }
+        .fa-spin {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.step.active .step-icon .fa-cog {
+    animation: spin 2s linear infinite;
+}
+
+.step.active .step-icon .fa-rocket {
+    animation: bounce 1s ease-in-out infinite alternate;
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-5px); }
+}
         
         body {
             font-family: 'Poppins', sans-serif;
