@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Your Order - SocialBoost Pro</title>
     <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/3133/3133301.png">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -52,11 +51,16 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+        }
+        
+        .header p {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
         }
         
         .search-box {
             background: white;
-            padding: 30px;
+            padding: clamp(20px, 5vw, 30px);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             margin-bottom: 30px;
@@ -66,6 +70,7 @@
         .search-box h2 {
             margin-bottom: 20px;
             color: var(--dark);
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
         }
         
         .search-form {
@@ -77,10 +82,10 @@
         
         .search-input {
             flex: 1;
-            padding: 15px;
+            padding: clamp(12px, 3vw, 15px);
             border: 2px solid #e9ecef;
             border-radius: var(--border-radius);
-            font-size: 16px;
+            font-size: clamp(14px, 3vw, 16px);
         }
         
         .search-input:focus {
@@ -91,12 +96,13 @@
         .search-btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 15px 25px;
+            padding: clamp(12px, 3vw, 15px) clamp(20px, 4vw, 25px);
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: 600;
             transition: var(--transition);
+            font-size: clamp(14px, 3vw, 16px);
         }
         
         .search-btn:hover {
@@ -105,23 +111,30 @@
         
         .order-status {
             background: white;
-            padding: 30px;
+            padding: clamp(20px, 5vw, 30px);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
         }
         
         .status-header {
             display: flex;
-            justify-content: between;
-            align-items: center;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 2px solid #f8f9fa;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .order-info h2 {
             color: var(--dark);
             margin-bottom: 10px;
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+        }
+        
+        .order-info p {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
         
         .status-badge {
@@ -130,7 +143,8 @@
             padding: 8px 16px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: clamp(12px, 2.5vw, 14px);
+            white-space: nowrap;
         }
         
         .progress-tracker {
@@ -174,8 +188,8 @@
         }
         
         .step-icon {
-            width: 45px;
-            height: 45px;
+            width: clamp(35px, 8vw, 45px);
+            height: clamp(35px, 8vw, 45px);
             border-radius: 50%;
             background: #e9ecef;
             display: flex;
@@ -183,6 +197,7 @@
             justify-content: center;
             margin-bottom: 10px;
             transition: var(--transition);
+            font-size: clamp(14px, 3vw, 16px);
         }
         
         .step.active .step-icon {
@@ -196,7 +211,7 @@
         }
         
         .step-text {
-            font-size: 14px;
+            font-size: clamp(12px, 2.5vw, 14px);
             font-weight: 600;
             color: #6c757d;
             text-align: center;
@@ -212,10 +227,28 @@
         
         .time-estimate {
             background: #e7f3ff;
-            padding: 20px;
+            padding: clamp(15px, 4vw, 20px);
             border-radius: var(--border-radius);
             text-align: center;
             margin: 30px 0;
+        }
+        
+        .time-estimate h3 {
+            margin-bottom: 10px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+        }
+        
+        .time-estimate p {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+        
+        .order-details {
+            margin: 30px 0;
+        }
+        
+        .order-details h3 {
+            margin-bottom: 15px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
         }
         
         .order-actions {
@@ -226,7 +259,7 @@
         }
         
         .btn {
-            padding: 12px 25px;
+            padding: clamp(10px, 2.5vw, 12px) clamp(15px, 3vw, 25px);
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
@@ -236,6 +269,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-size: clamp(14px, 2.5vw, 16px);
         }
         
         .btn-primary {
@@ -257,6 +291,7 @@
             display: none;
         }
         
+        /* Mobile-first responsive design */
         @media (max-width: 768px) {
             .search-form {
                 flex-direction: column;
@@ -279,10 +314,56 @@
                 flex-direction: row;
                 gap: 15px;
                 text-align: left;
+                width: 100%;
+            }
+            
+            .step-icon {
+                margin-bottom: 0;
             }
             
             .order-actions {
                 flex-direction: column;
+            }
+            
+            .status-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .track-container {
+                width: 100%;
+            }
+            
+            .search-box, .order-status {
+                padding: 20px 15px;
+            }
+            
+            .step {
+                gap: 10px;
+            }
+            
+            .step-text {
+                flex: 1;
+            }
+        }
+        
+        /* For very small screens */
+        @media (max-width: 360px) {
+            .header h1 {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .step-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
             }
         }
     </style>
@@ -379,7 +460,7 @@
         </div>
         
         <div id="orderNotFound" class="order-status hidden" style="text-align: center;">
-            <div style="font-size: 80px; color: var(--warning); margin: 20px 0;">
+            <div style="font-size: clamp(50px, 15vw, 80px); color: var(--warning); margin: 20px 0;">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
             <h2>Order Not Found</h2>
