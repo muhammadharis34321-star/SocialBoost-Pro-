@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -610,11 +611,10 @@
             </div>
         </div>
     </div>
-
     <script>
         // ✅ BACKEND API CONFIGURATION
         const API_BASE = 'https://python22.pythonanywhere.com';
-
+    
         // Global variables
         let timerSeconds = 0;
         let progressInterval;
@@ -624,7 +624,7 @@
         let orderId = '';
         let paymentMethod = '';
         let progress = 0;
-
+    
         // DOM elements
         const timerElement = document.getElementById('timer');
         const progressBar = document.getElementById('progressBar');
@@ -632,7 +632,7 @@
         const step2 = document.getElementById('step2');
         const step3 = document.getElementById('step3');
         const processingMessage = document.getElementById('processingMessage');
-
+    
         // ✅ TEST BACKEND CONNECTION
         async function testBackend() {
             try {
@@ -654,56 +654,79 @@
                 console.error('❌ Backend connection failed:', error);
             }
         }
-
+    
+        // Generate a unique order ID
+        function generateOrderId() {
+            const timestamp = Date.now();
+            const random = Math.floor(Math.random() * 10000);
+            return 'SB' + timestamp + random;
+        }
+    
+        // Redirect to track order page
+        function redirectToTrackOrder() {
+            const currentOrderId = document.getElementById('successOrderId').textContent;
+            
+            if (currentOrderId && currentOrderId !== 'Loading...') {
+                window.location.href = `track-order.html?order_id=${currentOrderId}`;
+            } else {
+                window.location.href = `track-order.html?order_id=${orderId}`;
+            }
+        }
+    
         // Initialize payment processing
         function initializePaymentProcessing() {
             console.log("=== PAYMENT PROCESSING DEBUG ===");
-
+    
             try {
                 // Get order data from URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
-                orderId = urlParams.get("order_id") || generateOrderId();
+                
+                // Agar URL mein order_id hai to use karo, nahi to naya generate karo
+                orderId = urlParams.get("order_id");
+                
+                if (!orderId) {
+                    orderId = generateOrderId();
+                    console.log("Generated new Order ID:", orderId);
+                } else {
+                    console.log("Using existing Order ID:", orderId);
+                }
+                
                 paymentMethod = urlParams.get("method") || "easypaisa";
-
+    
                 console.log("URL Params:", {
                     order_id: urlParams.get("order_id"),
                     method: urlParams.get("method"),
                 });
-
+    
                 // Check if required variables are available
                 if (!orderId) {
                     console.error("ERROR: Order ID is missing");
                     showErrorState("Order ID not found. Please try again.");
                     return;
                 }
-
+    
                 if (!paymentMethod) {
                     console.error("ERROR: Payment method is missing");
                     showErrorState("Payment method not specified.");
                     return;
                 }
-
+    
                 // Update order details display
                 updateOrderDetails();
-
+    
                 // Start timer
                 startTimer();
-
+    
                 // Start progress simulation
                 startProgressSimulation();
-
+    
                 console.log("Payment processing initialized successfully");
             } catch (error) {
                 console.error("MAIN SCRIPT ERROR:", error);
                 showErrorState("System error occurred. Please contact support.");
             }
         }
-
-        // Generate a unique order ID if not provided
-        function generateOrderId() {
-            return 'SB' + Date.now() + Math.floor(Math.random() * 1000);
-        }
-
+    
         // Update order details in the UI
         function updateOrderDetails() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -722,7 +745,7 @@
             // Update processing message
             processingMessage.textContent = `We are currently processing your ${paymentMethod} payment...`;
         }
-
+    
         // Start the timer
         function startTimer() {
             if (timerElement) {
@@ -734,14 +757,14 @@
                 console.error("Timer element not found");
             }
         }
-
+    
         // Start progress simulation
         function startProgressSimulation() {
             if (progressBar) {
                 progressInterval = setInterval(() => {
                     progress += 1;
                     updateProgress(progress);
-
+    
                     if (progress >= 100) {
                         clearInterval(progressInterval);
                         verifyPayment();
@@ -752,7 +775,7 @@
                 setTimeout(verifyPayment, 2000);
             }
         }
-
+    
         // Update progress bar and steps
         function updateProgress(percent) {
             console.log(`Updating progress: ${percent}%`);
@@ -761,7 +784,7 @@
             } else {
                 console.error("Progress bar element not found");
             }
-
+    
             // Update step status
             if (percent >= 33 && step1 && step2) {
                 step1.classList.add("completed");
@@ -775,14 +798,14 @@
                 step3.classList.add("completed");
             }
         }
-
+    
         // ✅ PAYMENT VERIFICATION FUNCTION
         async function verifyPayment() {
             try {
                 verificationAttempts++;
-
+    
                 console.log(`Verification attempt ${verificationAttempts} of ${maxAttempts}`);
-
+    
                 const urlParams = new URLSearchParams(window.location.search);
                 const requestData = {
                     order_id: orderId,
@@ -790,14 +813,14 @@
                     phone_number: urlParams.get('phone') || "N/A",
                     amount: parseInt(urlParams.get('amount') || "0"),
                 };
-
+    
                 console.log("Sending payment verification request:", requestData);
-
+    
                 // Simulate API call - Replace with your actual API endpoint
                 const response = await simulateAPICall(requestData);
-
+    
                 console.log("Response data:", response);
-
+    
                 if (response.success) {
                     // Success
                     console.log("Payment verified successfully");
@@ -817,7 +840,7 @@
                 }
             } catch (error) {
                 console.error("Payment verification error:", error);
-
+    
                 if (verificationAttempts < maxAttempts) {
                     console.log(`Retrying after error... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
                     setTimeout(verifyPayment, 2000);
@@ -828,7 +851,7 @@
                 }
             }
         }
-
+    
         // Simulate API call - Replace with your actual API
         async function simulateAPICall(requestData) {
             // Simulate network delay
@@ -850,13 +873,13 @@
                 };
             }
         }
-
+    
         // Show success state
         function showSuccessState(transactionId) {
             console.log("Showing success state");
             const processingState = document.getElementById("processingState");
             const successState = document.getElementById("successState");
-
+    
             if (processingState) processingState.classList.add("hidden");
             if (successState) {
                 successState.classList.remove("hidden");
@@ -865,19 +888,19 @@
                     transactionIdElement.textContent = transactionId || `AUTO_${orderId}`;
                 }
             }
-
+    
             // Auto redirect after 5 seconds
             setTimeout(() => {
-                redirectToSuccess(transactionId);
+                redirectToTrackOrder();
             }, 5000);
         }
-
+    
         // Show error state
         function showErrorState(message) {
             console.log("Showing error state:", message);
             const processingState = document.getElementById("processingState");
             const errorState = document.getElementById("errorState");
-
+    
             if (processingState) processingState.classList.add("hidden");
             if (errorState) {
                 errorState.classList.remove("hidden");
@@ -886,39 +909,20 @@
                     errorMessageElement.textContent = message;
                 }
             }
-
+    
             if (timerInterval) clearInterval(timerInterval);
             if (progressInterval) clearInterval(progressInterval);
         }
-
-        // Redirect to success page
-        function redirectToSuccess(transactionId) {
-            const finalTransactionId = transactionId || `AUTO_${orderId}`;
-            console.log("Redirecting to success page");
-            
-            // Build success URL with all parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const successUrl = `/payment-success?order_id=${orderId}&transaction_id=${finalTransactionId}`;
-            
-            // Add all existing parameters to maintain state
-            for (const [key, value] of urlParams) {
-                if (key !== 'order_id') {
-                    successUrl += `&${key}=${value}`;
-                }
-            }
-            
-            window.location.href = successUrl;
-        }
-
+    
         // Retry verification
         function retryVerification() {
             console.log("Retrying verification");
             const errorState = document.getElementById("errorState");
             const processingState = document.getElementById("processingState");
-
+    
             if (errorState) errorState.classList.add("hidden");
             if (processingState) processingState.classList.remove("hidden");
-
+    
             // Reset progress
             progress = 0;
             updateProgress(0);
@@ -927,7 +931,7 @@
                 timerElement.textContent = `Time elapsed: ${timerSeconds} seconds`;
             }
             verificationAttempts = 0;
-
+    
             // Restart timer
             if (timerInterval) clearInterval(timerInterval);
             if (timerElement) {
@@ -936,14 +940,14 @@
                     timerElement.textContent = `Time elapsed: ${timerSeconds} seconds`;
                 }, 1000);
             }
-
+    
             // Restart progress
             if (progressInterval) clearInterval(progressInterval);
             if (progressBar) {
                 progressInterval = setInterval(() => {
                     progress += 1;
                     updateProgress(progress);
-
+    
                     if (progress >= 100) {
                         clearInterval(progressInterval);
                         verifyPayment();
@@ -954,21 +958,21 @@
                 setTimeout(verifyPayment, 2000);
             }
         }
-
+    
         // Contact support
         function contactSupport() {
             console.log("Contacting support");
             window.location.href = `mailto:support@socialboostpro.com?subject=Payment Issue - Order ${orderId}`;
         }
-
+    
         // Initialize when page loads
         window.addEventListener('load', function() {
             testBackend();
             initializePaymentProcessing();
         });
-
+    
         // Global functions for buttons
-        window.redirectToSuccess = redirectToSuccess;
+        window.redirectToTrackOrder = redirectToTrackOrder;
         window.retryVerification = retryVerification;
         window.contactSupport = contactSupport;
     </script>
