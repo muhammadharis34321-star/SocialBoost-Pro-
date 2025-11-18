@@ -47,7 +47,7 @@
         width: 90%;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 15px;
+        padding: 0 clamp(10px, 3vw, 15px);
       }
 
       /* Header Styles */
@@ -65,11 +65,13 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 0;
+        padding: clamp(15px, 4vw, 20px) 0;
+        flex-wrap: wrap;
+        gap: 15px;
       }
 
       .logo {
-        font-size: 1.8rem;
+        font-size: clamp(1.4rem, 5vw, 1.8rem);
         font-weight: 700;
         background: linear-gradient(to right, var(--primary), var(--secondary));
         -webkit-background-clip: text;
@@ -83,46 +85,46 @@
 
       /* Order Section */
       .order-section {
-        padding-top: 120px;
-        padding-bottom: 80px;
+        padding-top: clamp(100px, 15vw, 120px);
+        padding-bottom: clamp(40px, 8vw, 80px);
         flex: 1;
       }
 
       .order-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 40px;
+        gap: clamp(20px, 4vw, 40px);
         max-width: 1000px;
         margin: 0 auto;
       }
 
       .order-form-container {
         flex: 1;
-        min-width: 300px;
+        min-width: min(100%, 300px);
       }
 
       .order-summary-sidebar {
-        flex: 0 0 300px;
+        flex: 0 0 min(100%, 300px);
         background: white;
         border-radius: 15px;
-        padding: 30px;
+        padding: clamp(20px, 4vw, 30px);
         box-shadow: var(--shadow);
         height: fit-content;
         position: sticky;
-        top: 100px;
+        top: clamp(90px, 12vw, 100px);
       }
 
       .order-card {
         background: white;
         border-radius: 15px;
-        padding: 40px;
+        padding: clamp(25px, 5vw, 40px);
         box-shadow: var(--shadow);
       }
 
       .order-progress {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 40px;
+        margin-bottom: clamp(25px, 5vw, 40px);
         position: relative;
       }
 
@@ -146,8 +148,8 @@
       }
 
       .step-number {
-        width: 40px;
-        height: 40px;
+        width: clamp(35px, 8vw, 40px);
+        height: clamp(35px, 8vw, 40px);
         border-radius: 50%;
         background: #e9ecef;
         color: var(--gray);
@@ -157,6 +159,7 @@
         font-weight: 600;
         margin-bottom: 10px;
         transition: var(--transition);
+        font-size: clamp(14px, 3vw, 16px);
       }
 
       .progress-step.active .step-number {
@@ -170,9 +173,10 @@
       }
 
       .step-label {
-        font-size: 0.9rem;
+        font-size: clamp(12px, 2.5vw, 14px);
         color: var(--gray);
         font-weight: 500;
+        text-align: center;
       }
 
       .progress-step.active .step-label {
@@ -190,26 +194,27 @@
       }
 
       .form-header {
-        margin-bottom: 30px;
+        margin-bottom: clamp(20px, 4vw, 30px);
         text-align: center;
       }
 
       .form-header h2 {
-        font-size: 1.8rem;
+        font-size: clamp(1.4rem, 4vw, 1.8rem);
         color: var(--dark);
         margin-bottom: 10px;
       }
 
       .form-header p {
         color: var(--gray);
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
       }
 
       .platform-badge {
         display: inline-block;
-        padding: 8px 20px;
+        padding: clamp(6px, 2vw, 8px) clamp(15px, 3vw, 20px);
         border-radius: 50px;
         color: white;
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 2.2vw, 0.9rem);
         font-weight: 500;
         margin-bottom: 20px;
       }
@@ -231,7 +236,7 @@
       }
 
       .form-group {
-        margin-bottom: 25px;
+        margin-bottom: clamp(20px, 4vw, 25px);
       }
 
       .form-group label {
@@ -239,16 +244,17 @@
         margin-bottom: 8px;
         font-weight: 500;
         color: var(--dark);
+        font-size: clamp(14px, 3vw, 16px);
       }
 
       .form-group input,
       .form-group select,
       .form-group textarea {
         width: 100%;
-        padding: 15px;
+        padding: clamp(12px, 3vw, 15px);
         border: 2px solid #e9ecef;
         border-radius: 10px;
-        font-size: 1rem;
+        font-size: clamp(14px, 3vw, 16px);
         transition: var(--transition);
         background: white;
       }
@@ -268,16 +274,18 @@
 
       .form-row {
         display: flex;
-        gap: 15px;
+        gap: clamp(10px, 2.5vw, 15px);
+        flex-wrap: wrap;
       }
 
       .form-row .form-group {
         flex: 1;
+        min-width: min(100%, 200px);
       }
 
       .btn {
         display: inline-block;
-        padding: 15px 30px;
+        padding: clamp(12px, 3vw, 15px) clamp(20px, 4vw, 30px);
         background: linear-gradient(to right, var(--primary), var(--secondary));
         color: white;
         border-radius: 50px;
@@ -287,7 +295,8 @@
         border: none;
         cursor: pointer;
         box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
-        font-size: 1rem;
+        font-size: clamp(14px, 3vw, 16px);
+        text-align: center;
       }
 
       .btn:hover {
@@ -321,20 +330,22 @@
         display: flex;
         justify-content: space-between;
         margin-top: 30px;
+        gap: 15px;
+        flex-wrap: wrap;
       }
 
       /* Payment Options */
       .payment-options {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+        gap: clamp(15px, 3vw, 20px);
         margin: 30px 0;
       }
 
       .payment-option {
         border: 2px solid #e9ecef;
         border-radius: 15px;
-        padding: 25px;
+        padding: clamp(20px, 4vw, 25px);
         text-align: center;
         cursor: pointer;
         transition: var(--transition);
@@ -353,7 +364,7 @@
       }
 
       .payment-icon {
-        font-size: 3rem;
+        font-size: clamp(2.5rem, 8vw, 3rem);
         margin-bottom: 15px;
       }
 
@@ -368,11 +379,12 @@
       .payment-option h3 {
         margin-bottom: 10px;
         color: var(--dark);
+        font-size: clamp(1rem, 3vw, 1.2rem);
       }
 
       .payment-option p {
         color: var(--gray);
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 2.2vw, 0.9rem);
       }
 
       /* Order Summary */
@@ -380,6 +392,7 @@
         margin-bottom: 20px;
         color: var(--dark);
         text-align: center;
+        font-size: clamp(1.1rem, 3.5vw, 1.3rem);
       }
 
       .summary-item {
@@ -388,6 +401,7 @@
         margin-bottom: 15px;
         padding-bottom: 15px;
         border-bottom: 1px solid #e9ecef;
+        font-size: clamp(14px, 2.5vw, 16px);
       }
 
       .summary-item:last-child {
@@ -401,18 +415,18 @@
         margin-top: 15px;
         padding-top: 15px;
         border-top: 2px solid #e9ecef;
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 3vw, 1.2rem);
         color: var(--primary);
       }
 
       /* Success Message */
       .success-message {
         text-align: center;
-        padding: 40px 20px;
+        padding: clamp(30px, 6vw, 40px) clamp(15px, 3vw, 20px);
       }
 
       .success-icon {
-        font-size: 4rem;
+        font-size: clamp(3rem, 12vw, 4rem);
         color: var(--success);
         margin-bottom: 20px;
       }
@@ -420,11 +434,13 @@
       .success-message h2 {
         margin-bottom: 15px;
         color: var(--dark);
+        font-size: clamp(1.4rem, 4vw, 1.8rem);
       }
 
       .success-message p {
         color: var(--gray);
         margin-bottom: 30px;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
       }
 
       /* Animations */
@@ -474,11 +490,16 @@
         .payment-options {
           grid-template-columns: 1fr;
         }
+        
+        .header-container {
+          justify-content: center;
+          text-align: center;
+        }
       }
 
       @media (max-width: 576px) {
         .order-card {
-          padding: 25px;
+          padding: 20px;
         }
 
         .order-progress {
@@ -497,6 +518,15 @@
 
         .step-label {
           font-size: 1rem;
+          text-align: left;
+        }
+        
+        .form-actions {
+          flex-direction: column;
+        }
+        
+        .form-actions .btn {
+          width: 100%;
         }
       }
 
@@ -509,7 +539,7 @@
         );
         border: 2px solid #00c851;
         border-radius: 10px;
-        padding: 20px;
+        padding: clamp(15px, 3vw, 20px);
         margin-bottom: 25px;
       }
 
@@ -519,6 +549,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        font-size: clamp(1rem, 3vw, 1.1rem);
       }
 
       .monetization-features {
@@ -531,6 +562,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        font-size: clamp(14px, 2.5vw, 16px);
       }
 
       .monetization-features li i {
@@ -543,43 +575,67 @@
         color: #6c757d;
         cursor: not-allowed;
       }
-      /* Verification Status Styles - Add this to your existing CSS */
-.verification-status {
-    padding: 10px 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.verification-status.success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-.verification-status.error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-.verification-status.loading {
-    background: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
+      
+      /* Verification Status Styles */
+      .verification-status {
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: clamp(14px, 2.5vw, 16px);
+      }
+      .verification-status.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .verification-status.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .verification-status.loading {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
 
-.verification-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #28a745;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    margin-left: 10px;
-}
+      .verification-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #28a745;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: clamp(12px, 2.2vw, 14px);
+        margin-left: 10px;
+      }
+      
+      /* For very small screens */
+      @media (max-width: 360px) {
+        .container {
+          width: 95%;
+          padding: 0 10px;
+        }
+        
+        .order-card {
+          padding: 15px;
+        }
+        
+        .step-number {
+          width: 30px;
+          height: 30px;
+          font-size: 14px;
+        }
+        
+        .payment-option {
+          padding: 15px;
+        }
+      }
     </style>
   </head>
   <body>
