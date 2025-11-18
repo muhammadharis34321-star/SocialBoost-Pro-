@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +27,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            font-size: 16px;
+        }
+
         body {
             font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
@@ -35,9 +38,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
             color: #333;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .processing-container {
@@ -48,12 +52,13 @@
             overflow: hidden;
             box-shadow: var(--box-shadow);
             text-align: center;
+            margin: 0 auto;
         }
 
         .processing-header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 40px 30px;
+            padding: 30px 20px;
             position: relative;
         }
 
@@ -68,36 +73,37 @@
         }
 
         .processing-header h1 {
-            font-size: 32px;
+            font-size: clamp(24px, 5vw, 32px);
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .processing-header p {
             opacity: 0.9;
-            font-size: 16px;
+            font-size: clamp(14px, 3vw, 16px);
         }
 
         .processing-body {
-            padding: 40px 30px;
+            padding: 30px 20px;
         }
 
         .spinner-container {
             position: relative;
-            margin: 30px auto;
-            width: 100px;
-            height: 100px;
+            margin: 25px auto;
+            width: 90px;
+            height: 90px;
         }
 
         .spinner {
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid var(--primary);
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             animation: spin 1.5s linear infinite;
             position: absolute;
             top: 10px;
@@ -105,11 +111,11 @@
         }
 
         .spinner-inner {
-            border: 4px solid transparent;
-            border-top: 4px solid var(--secondary);
+            border: 3px solid transparent;
+            border-top: 3px solid var(--secondary);
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite reverse;
             position: absolute;
             top: 20px;
@@ -117,11 +123,11 @@
         }
 
         .checkmark {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             display: block;
-            stroke-width: 4;
+            stroke-width: 3;
             stroke: #fff;
             stroke-miterlimit: 10;
             margin: 20px auto;
@@ -133,7 +139,7 @@
         .checkmark__circle {
             stroke-dasharray: 166;
             stroke-dashoffset: 166;
-            stroke-width: 4;
+            stroke-width: 3;
             stroke-miterlimit: 10;
             stroke: var(--success);
             fill: none;
@@ -174,22 +180,22 @@
 
         @keyframes fill {
             100% {
-                box-shadow: inset 0px 0px 0px 60px var(--success);
+                box-shadow: inset 0px 0px 0px 50px var(--success);
             }
         }
 
         .progress-container {
             background: #f8f9fa;
             border-radius: var(--border-radius);
-            padding: 25px;
-            margin: 25px 0;
+            padding: 20px;
+            margin: 20px 0;
         }
 
         .progress-steps {
             display: flex;
             justify-content: space-between;
             position: relative;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .progress-steps::before {
@@ -223,8 +229,8 @@
         }
 
         .step-icon {
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: #e9ecef;
             display: flex;
@@ -232,6 +238,7 @@
             justify-content: center;
             margin-bottom: 8px;
             transition: var(--transition);
+            font-size: 14px;
         }
 
         .step.active .step-icon {
@@ -245,7 +252,7 @@
         }
 
         .step-text {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #6c757d;
             text-align: center;
@@ -262,8 +269,8 @@
         .order-details {
             background: #f8f9fa;
             border-radius: var(--border-radius);
-            padding: 25px;
-            margin: 25px 0;
+            padding: 20px;
+            margin: 20px 0;
             text-align: left;
         }
 
@@ -272,27 +279,32 @@
             color: var(--dark);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            font-size: 18px;
         }
 
         .detail-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
         }
 
         .detail-item {
-            padding: 12px;
+            padding: 10px;
             background: white;
             border-radius: 8px;
             border: 1px solid #e9ecef;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .detail-item strong {
             color: var(--primary);
             display: block;
             margin-bottom: 5px;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -300,9 +312,9 @@
         .status-message {
             background: #e7f3ff;
             border: 1px solid #b3d9ff;
-            padding: 20px;
+            padding: 18px;
             border-radius: var(--border-radius);
-            margin: 20px 0;
+            margin: 18px 0;
             text-align: center;
         }
 
@@ -319,10 +331,10 @@
 
         .support-section {
             background: #f8f9fa;
-            padding: 20px;
+            padding: 18px;
             border-radius: var(--border-radius);
             text-align: center;
-            margin-top: 25px;
+            margin-top: 20px;
             border-top: 1px solid #e9ecef;
         }
 
@@ -338,6 +350,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-size: 14px;
         }
 
         .support-link:hover {
@@ -351,17 +364,19 @@
         .btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 15px 30px;
+            padding: 14px 25px;
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 18px;
+            width: 100%;
+            justify-content: center;
         }
 
         .btn:hover {
@@ -381,23 +396,95 @@
             background: var(--success);
         }
 
-        @media (max-width: 768px) {
-            .processing-body {
-                padding: 30px 20px;
+        /* Mobile-specific adjustments */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
             }
-
+            
+            .processing-container {
+                border-radius: 15px;
+            }
+            
             .processing-header {
-                padding: 30px 20px;
+                padding: 25px 15px;
             }
-
-            .processing-header h1 {
-                font-size: 24px;
+            
+            .processing-body {
+                padding: 25px 15px;
             }
-
+            
+            .spinner-container {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .spinner {
+                width: 60px;
+                height: 60px;
+                top: 10px;
+                left: 10px;
+            }
+            
+            .spinner-inner {
+                width: 40px;
+                height: 40px;
+                top: 20px;
+                left: 20px;
+            }
+            
+            .progress-container {
+                padding: 15px;
+            }
+            
+            .order-details {
+                padding: 15px;
+            }
+            
             .detail-grid {
                 grid-template-columns: 1fr;
+                gap: 10px;
             }
+            
+            .status-message, .support-section {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
 
+        /* Tablet adjustments */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .processing-header {
+                padding: 35px 25px;
+            }
+            
+            .processing-body {
+                padding: 35px 25px;
+            }
+            
+            .detail-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Desktop adjustments */
+        @media (min-width: 769px) {
+            .btn {
+                width: auto;
+            }
+            
+            .btn + .btn {
+                margin-left: 10px;
+            }
+        }
+
+        /* Special handling for progress steps on mobile */
+        @media (max-width: 768px) {
             .progress-steps {
                 flex-direction: column;
                 gap: 20px;
@@ -416,565 +503,589 @@
                 flex-direction: row;
                 gap: 15px;
             }
+            
+            .step-text {
+                font-size: 14px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 360px) {
+            .processing-header h1 {
+                font-size: 20px;
+            }
+            
+            .processing-header p {
+                font-size: 13px;
+            }
+            
+            .step-text {
+                font-size: 12px;
+            }
+            
+            .order-details h3 {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="processing-container">
-        <div class="processing-header">
-            <h1><i class="fas fa-sync-alt"></i> Payment Processing</h1>
-            <p>Please wait while we verify your payment</p>
+    <body>
+        <div class="processing-container">
+            <div class="processing-header">
+                <h1><i class="fas fa-sync-alt"></i> Payment Processing</h1>
+                <p>Please wait while we verify your payment</p>
+            </div>
+    
+            <div class="processing-body">
+                <!-- Processing State -->
+                <div id="processingState">
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <div class="spinner-inner"></div>
+                    </div>
+    
+                    <h2>Verifying Your Payment</h2>
+                    <p id="processingMessage">We are currently processing your payment...</p>
+    
+                    <div class="progress-container">
+                        <div class="progress-steps">
+                            <div class="progress-bar" id="progressBar"></div>
+                            <div class="step active" id="step1">
+                                <div class="step-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div class="step-text">Payment Sent</div>
+                            </div>
+                            <div class="step" id="step2">
+                                <div class="step-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="step-text">Verifying</div>
+                            </div>
+                            <div class="step" id="step3">
+                                <div class="step-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="step-text">Confirmed</div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="order-details">
+                        <h3><i class="fas fa-receipt"></i> Order Details</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <strong>Order ID</strong>
+                                <span id="displayOrderId">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Amount</strong>
+                                <span id="displayAmount">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Platform</strong>
+                                <span id="displayPlatform">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Service</strong>
+                                <span id="displayService">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Quantity</strong>
+                                <span id="displayQuantity">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Payment Method</strong>
+                                <span id="displayMethod">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="status-message">
+                        <p>
+                            <i class="fas fa-info-circle"></i> This process usually takes 1-2
+                            minutes
+                        </p>
+                        <div class="timer" id="timer">Time elapsed: 0 seconds</div>
+                    </div>
+                </div>
+    
+                <!-- Success State -->
+                <div id="successState" class="hidden">
+                    <svg
+                        class="checkmark"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 52 52"
+                    >
+                        <circle
+                            class="checkmark__circle"
+                            cx="26"
+                            cy="26"
+                            r="25"
+                            fill="none"
+                        />
+                        <path
+                            class="checkmark__check"
+                            fill="none"
+                            d="M14.1 27.2l7.1 7.2 16.7-16.8"
+                        />
+                    </svg>
+    
+                    <h2>Payment Verified Successfully! 🎉</h2>
+                    <p>
+                        Your payment has been confirmed and your order is now being
+                        processed.
+                    </p>
+    
+                    <div class="order-details">
+                        <h3><i class="fas fa-check-circle"></i> Payment Confirmed</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <strong>Order ID</strong>
+                                <span id="successOrderId">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Amount Paid</strong>
+                                <span id="successAmount">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Transaction ID</strong>
+                                <span id="transactionId">Loading...</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Status</strong>
+                                <span style="color: var(--success); font-weight: 600"
+                                    >Confirmed</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div
+                        class="status-message"
+                        style="background: #d4edda; border-color: #c3e6cb"
+                    >
+                        <p>
+                            <i class="fas fa-rocket"></i> Your order has been queued for
+                            processing!
+                        </p>
+                        <p>You will receive updates on your registered email.</p>
+                    </div>
+    
+               <button class="btn btn-success" onclick="window.location.href='track_order.html'">
+        <i class="fas fa-external-link-alt"></i> View Order Status
+    </button>
+    
+                </div>
+    
+                <!-- Error State -->
+                <div id="errorState" class="hidden">
+                    <div style="font-size: 80px; color: var(--warning); margin: 20px 0">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+    
+                    <h2>Payment Verification Failed</h2>
+                    <p id="errorMessage">There was an issue verifying your payment.</p>
+    
+                    <div
+                        class="status-message"
+                        style="background: #ffeaa7; border-color: #ffeaa7"
+                    >
+                        <p>
+                            <i class="fas fa-info-circle"></i> Please check your payment
+                            details and try again.
+                        </p>
+                    </div>
+    
+                    <button
+                        class="btn btn-warning"
+                        onclick="retryVerification()"
+                    >
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+    
+                    <button
+                        class="btn btn-dark"
+                        onclick="contactSupport()"
+                        style="margin-left: 10px"
+                    >
+                        <i class="fas fa-headset"></i> Contact Support
+                    </button>
+                </div>
+    
+                <div class="support-section">
+                    <p>Need help with your payment?</p>
+                    <a href="mailto:support@socialboostpro.com" class="support-link">
+                        <i class="fas fa-envelope"></i> support@socialboostpro.com
+                    </a>
+                </div>
+            </div>
         </div>
-
-        <div class="processing-body">
-            <!-- Processing State -->
-            <div id="processingState">
-                <div class="spinner-container">
-                    <div class="spinner"></div>
-                    <div class="spinner-inner"></div>
-                </div>
-
-                <h2>Verifying Your Payment</h2>
-                <p id="processingMessage">We are currently processing your payment...</p>
-
-                <div class="progress-container">
-                    <div class="progress-steps">
-                        <div class="progress-bar" id="progressBar"></div>
-                        <div class="step active" id="step1">
-                            <div class="step-icon">
-                                <i class="fas fa-credit-card"></i>
-                            </div>
-                            <div class="step-text">Payment Sent</div>
-                        </div>
-                        <div class="step" id="step2">
-                            <div class="step-icon">
-                                <i class="fas fa-search"></i>
-                            </div>
-                            <div class="step-text">Verifying</div>
-                        </div>
-                        <div class="step" id="step3">
-                            <div class="step-icon">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <div class="step-text">Confirmed</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="order-details">
-                    <h3><i class="fas fa-receipt"></i> Order Details</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <strong>Order ID</strong>
-                            <span id="displayOrderId">Loading...</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Amount</strong>
-                            <span id="displayAmount">Loading...</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Platform</strong>
-                            <span id="displayPlatform">Loading...</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Service</strong>
-                            <span id="displayService">Loading...</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Quantity</strong>
-                            <span id="displayQuantity">Loading...</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Payment Method</strong>
-                            <span id="displayMethod">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="status-message">
-                    <p>
-                        <i class="fas fa-info-circle"></i> This process usually takes 1-2
-                        minutes
-                    </p>
-                    <div class="timer" id="timer">Time elapsed: 0 seconds</div>
-                </div>
-            </div>
-
-            <!-- Success State -->
-            <div id="successState" class="hidden">
-                <svg
-                    class="checkmark"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 52 52"
-                >
-                    <circle
-                        class="checkmark__circle"
-                        cx="26"
-                        cy="26"
-                        r="25"
-                        fill="none"
-                    />
-                    <path
-                        class="checkmark__check"
-                        fill="none"
-                        d="M14.1 27.2l7.1 7.2 16.7-16.8"
-                    />
-                </svg>
-
-                <h2>Payment Verified Successfully! 🎉</h2>
-                <p>
-                    Your payment has been confirmed and your order is now being
-                    processed.
-                </p>
-
-                <div class="order-details">
-                    <h3><i class="fas fa-check-circle"></i> Payment Confirmed</h3>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <strong>Order ID</strong>
-                            <span id="successOrderId">Loading...</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Amount Paid</strong>
-                            <span id="successAmount">Loading...</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Transaction ID</strong>
-                            <span id="transactionId">Loading...</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Status</strong>
-                            <span style="color: var(--success); font-weight: 600"
-                                >Confirmed</span
-                            >
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="status-message"
-                    style="background: #d4edda; border-color: #c3e6cb"
-                >
-                    <p>
-                        <i class="fas fa-rocket"></i> Your order has been queued for
-                        processing!
-                    </p>
-                    <p>You will receive updates on your registered email.</p>
-                </div>
-
-           <button class="btn btn-success" onclick="window.location.href='track_order.html'">
-    <i class="fas fa-external-link-alt"></i> View Order Status
-</button>
-
-            </div>
-
-            <!-- Error State -->
-            <div id="errorState" class="hidden">
-                <div style="font-size: 80px; color: var(--warning); margin: 20px 0">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-
-                <h2>Payment Verification Failed</h2>
-                <p id="errorMessage">There was an issue verifying your payment.</p>
-
-                <div
-                    class="status-message"
-                    style="background: #ffeaa7; border-color: #ffeaa7"
-                >
-                    <p>
-                        <i class="fas fa-info-circle"></i> Please check your payment
-                        details and try again.
-                    </p>
-                </div>
-
-                <button
-                    class="btn btn-warning"
-                    onclick="retryVerification()"
-                >
-                    <i class="fas fa-redo"></i> Try Again
-                </button>
-
-                <button
-                    class="btn btn-dark"
-                    onclick="contactSupport()"
-                    style="margin-left: 10px"
-                >
-                    <i class="fas fa-headset"></i> Contact Support
-                </button>
-            </div>
-
-            <div class="support-section">
-                <p>Need help with your payment?</p>
-                <a href="mailto:support@socialboostpro.com" class="support-link">
-                    <i class="fas fa-envelope"></i> support@socialboostpro.com
-                </a>
-            </div>
-        </div>
-    </div>
-    <script>
-        // ✅ BACKEND API CONFIGURATION
-        const API_BASE = 'https://python22.pythonanywhere.com';
-    
-        // Global variables
-        let timerSeconds = 0;
-        let progressInterval;
-        let timerInterval;
-        let verificationAttempts = 0;
-        const maxAttempts = 3;
-        let orderId = '';
-        let paymentMethod = '';
-        let progress = 0;
-    
-        // DOM elements
-        const timerElement = document.getElementById('timer');
-        const progressBar = document.getElementById('progressBar');
-        const step1 = document.getElementById('step1');
-        const step2 = document.getElementById('step2');
-        const step3 = document.getElementById('step3');
-        const processingMessage = document.getElementById('processingMessage');
-    
-        // ✅ TEST BACKEND CONNECTION
-        async function testBackend() {
-            try {
-                const response = await fetch(`${API_BASE}/test`);
-                
-                // Pehle text mein receive karo
-                const text = await response.text();
-                console.log('✅ Backend connected:', text);
-                
-                // Phir JSON try karo
+        <script>
+            // ✅ BACKEND API CONFIGURATION
+            const API_BASE = 'https://python22.pythonanywhere.com';
+        
+            // Global variables
+            let timerSeconds = 0;
+            let progressInterval;
+            let timerInterval;
+            let verificationAttempts = 0;
+            const maxAttempts = 3;
+            let orderId = '';
+            let paymentMethod = '';
+            let progress = 0;
+        
+            // DOM elements
+            const timerElement = document.getElementById('timer');
+            const progressBar = document.getElementById('progressBar');
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            const step3 = document.getElementById('step3');
+            const processingMessage = document.getElementById('processingMessage');
+        
+            // ✅ TEST BACKEND CONNECTION
+            async function testBackend() {
                 try {
-                    const data = JSON.parse(text);
-                    console.log('✅ Backend JSON:', data);
-                } catch {
-                    console.log('✅ Backend Text:', text);
-                }
-                
-            } catch (error) {
-                console.error('❌ Backend connection failed:', error);
-            }
-        }
-    
-        // Generate a unique order ID
-        function generateOrderId() {
-            const timestamp = Date.now();
-            const random = Math.floor(Math.random() * 10000);
-            return 'SB' + timestamp + random;
-        }
-    
-        // Redirect to track order page
-        function redirectToTrackOrder() {
-            const currentOrderId = document.getElementById('successOrderId').textContent;
-            
-            if (currentOrderId && currentOrderId !== 'Loading...') {
-                window.location.href = `track_order.html?order_id=${currentOrderId}`;
-            } else {
-                window.location.href = `track_order.html?order_id=${orderId}`;
-            }
-        }
-    
-        // Initialize payment processing
-        function initializePaymentProcessing() {
-            console.log("=== PAYMENT PROCESSING DEBUG ===");
-    
-            try {
-                // Get order data from URL parameters
-                const urlParams = new URLSearchParams(window.location.search);
-                
-                // Agar URL mein order_id hai to use karo, nahi to naya generate karo
-                orderId = urlParams.get("order_id");
-                
-                if (!orderId) {
-                    orderId = generateOrderId();
-                    console.log("Generated new Order ID:", orderId);
-                } else {
-                    console.log("Using existing Order ID:", orderId);
-                }
-                
-                paymentMethod = urlParams.get("method") || "easypaisa";
-    
-                console.log("URL Params:", {
-                    order_id: urlParams.get("order_id"),
-                    method: urlParams.get("method"),
-                });
-    
-                // Check if required variables are available
-                if (!orderId) {
-                    console.error("ERROR: Order ID is missing");
-                    showErrorState("Order ID not found. Please try again.");
-                    return;
-                }
-    
-                if (!paymentMethod) {
-                    console.error("ERROR: Payment method is missing");
-                    showErrorState("Payment method not specified.");
-                    return;
-                }
-    
-                // Update order details display
-                updateOrderDetails();
-    
-                // Start timer
-                startTimer();
-    
-                // Start progress simulation
-                startProgressSimulation();
-    
-                console.log("Payment processing initialized successfully");
-            } catch (error) {
-                console.error("MAIN SCRIPT ERROR:", error);
-                showErrorState("System error occurred. Please contact support.");
-            }
-        }
-    
-        // Update order details in the UI
-        function updateOrderDetails() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            document.getElementById('displayOrderId').textContent = orderId;
-            document.getElementById('displayAmount').textContent = (urlParams.get('amount') || '0') + ' PKR';
-            document.getElementById('displayPlatform').textContent = urlParams.get('platform') || 'TikTok';
-            document.getElementById('displayService').textContent = urlParams.get('service') || 'followers';
-            document.getElementById('displayQuantity').textContent = urlParams.get('quantity') || '1';
-            document.getElementById('displayMethod').textContent = paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1);
-            
-            // Also update success state
-            document.getElementById('successOrderId').textContent = orderId;
-            document.getElementById('successAmount').textContent = (urlParams.get('amount') || '0') + ' PKR';
-            
-            // Update processing message
-            processingMessage.textContent = `We are currently processing your ${paymentMethod} payment...`;
-        }
-    
-        // Start the timer
-        function startTimer() {
-            if (timerElement) {
-                timerInterval = setInterval(() => {
-                    timerSeconds++;
-                    timerElement.textContent = `Time elapsed: ${timerSeconds} seconds`;
-                }, 1000);
-            } else {
-                console.error("Timer element not found");
-            }
-        }
-    
-        // Start progress simulation
-        function startProgressSimulation() {
-            if (progressBar) {
-                progressInterval = setInterval(() => {
-                    progress += 1;
-                    updateProgress(progress);
-    
-                    if (progress >= 100) {
-                        clearInterval(progressInterval);
-                        verifyPayment();
+                    const response = await fetch(`${API_BASE}/test`);
+                    
+                    // Pehle text mein receive karo
+                    const text = await response.text();
+                    console.log('✅ Backend connected:', text);
+                    
+                    // Phir JSON try karo
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('✅ Backend JSON:', data);
+                    } catch {
+                        console.log('✅ Backend Text:', text);
                     }
-                }, 100);
-            } else {
-                console.error("Progress bar not found, starting verification directly");
-                setTimeout(verifyPayment, 2000);
+                    
+                } catch (error) {
+                    console.error('❌ Backend connection failed:', error);
+                }
             }
-        }
-    
-        // Update progress bar and steps
-        function updateProgress(percent) {
-            console.log(`Updating progress: ${percent}%`);
-            if (progressBar) {
-                progressBar.style.width = percent + "%";
-            } else {
-                console.error("Progress bar element not found");
+        
+            // Generate a unique order ID
+            function generateOrderId() {
+                const timestamp = Date.now();
+                const random = Math.floor(Math.random() * 10000);
+                return 'SB' + timestamp + random;
             }
-    
-            // Update step status
-            if (percent >= 33 && step1 && step2) {
-                step1.classList.add("completed");
-                step2.classList.add("active");
-            }
-            if (percent >= 66 && step2 && step3) {
-                step2.classList.add("completed");
-                step3.classList.add("active");
-            }
-            if (percent >= 100 && step3) {
-                step3.classList.add("completed");
-            }
-        }
-    
-        // ✅ PAYMENT VERIFICATION FUNCTION
-        async function verifyPayment() {
-            try {
-                verificationAttempts++;
-    
-                console.log(`Verification attempt ${verificationAttempts} of ${maxAttempts}`);
-    
-                const urlParams = new URLSearchParams(window.location.search);
-                const requestData = {
-                    order_id: orderId,
-                    payment_method: paymentMethod,
-                    phone_number: urlParams.get('phone') || "N/A",
-                    amount: parseInt(urlParams.get('amount') || "0"),
-                };
-    
-                console.log("Sending payment verification request:", requestData);
-    
-                // Simulate API call - Replace with your actual API endpoint
-                const response = await simulateAPICall(requestData);
-    
-                console.log("Response data:", response);
-    
-                if (response.success) {
-                    // Success
-                    console.log("Payment verified successfully");
-                    if (timerInterval) clearInterval(timerInterval);
-                    showSuccessState(response.transaction_id);
+        
+            // Redirect to track order page
+            function redirectToTrackOrder() {
+                const currentOrderId = document.getElementById('successOrderId').textContent;
+                
+                if (currentOrderId && currentOrderId !== 'Loading...') {
+                    window.location.href = `track_order.html?order_id=${currentOrderId}`;
                 } else {
-                    // Error
-                    console.log("Payment verification failed:", response.message);
+                    window.location.href = `track_order.html?order_id=${orderId}`;
+                }
+            }
+        
+            // Initialize payment processing
+            function initializePaymentProcessing() {
+                console.log("=== PAYMENT PROCESSING DEBUG ===");
+        
+                try {
+                    // Get order data from URL parameters
+                    const urlParams = new URLSearchParams(window.location.search);
+                    
+                    // Agar URL mein order_id hai to use karo, nahi to naya generate karo
+                    orderId = urlParams.get("order_id");
+                    
+                    if (!orderId) {
+                        orderId = generateOrderId();
+                        console.log("Generated new Order ID:", orderId);
+                    } else {
+                        console.log("Using existing Order ID:", orderId);
+                    }
+                    
+                    paymentMethod = urlParams.get("method") || "easypaisa";
+        
+                    console.log("URL Params:", {
+                        order_id: urlParams.get("order_id"),
+                        method: urlParams.get("method"),
+                    });
+        
+                    // Check if required variables are available
+                    if (!orderId) {
+                        console.error("ERROR: Order ID is missing");
+                        showErrorState("Order ID not found. Please try again.");
+                        return;
+                    }
+        
+                    if (!paymentMethod) {
+                        console.error("ERROR: Payment method is missing");
+                        showErrorState("Payment method not specified.");
+                        return;
+                    }
+        
+                    // Update order details display
+                    updateOrderDetails();
+        
+                    // Start timer
+                    startTimer();
+        
+                    // Start progress simulation
+                    startProgressSimulation();
+        
+                    console.log("Payment processing initialized successfully");
+                } catch (error) {
+                    console.error("MAIN SCRIPT ERROR:", error);
+                    showErrorState("System error occurred. Please contact support.");
+                }
+            }
+        
+            // Update order details in the UI
+            function updateOrderDetails() {
+                const urlParams = new URLSearchParams(window.location.search);
+                
+                document.getElementById('displayOrderId').textContent = orderId;
+                document.getElementById('displayAmount').textContent = (urlParams.get('amount') || '0') + ' PKR';
+                document.getElementById('displayPlatform').textContent = urlParams.get('platform') || 'TikTok';
+                document.getElementById('displayService').textContent = urlParams.get('service') || 'followers';
+                document.getElementById('displayQuantity').textContent = urlParams.get('quantity') || '1';
+                document.getElementById('displayMethod').textContent = paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1);
+                
+                // Also update success state
+                document.getElementById('successOrderId').textContent = orderId;
+                document.getElementById('successAmount').textContent = (urlParams.get('amount') || '0') + ' PKR';
+                
+                // Update processing message
+                processingMessage.textContent = `We are currently processing your ${paymentMethod} payment...`;
+            }
+        
+            // Start the timer
+            function startTimer() {
+                if (timerElement) {
+                    timerInterval = setInterval(() => {
+                        timerSeconds++;
+                        timerElement.textContent = `Time elapsed: ${timerSeconds} seconds`;
+                    }, 1000);
+                } else {
+                    console.error("Timer element not found");
+                }
+            }
+        
+            // Start progress simulation
+            function startProgressSimulation() {
+                if (progressBar) {
+                    progressInterval = setInterval(() => {
+                        progress += 1;
+                        updateProgress(progress);
+        
+                        if (progress >= 100) {
+                            clearInterval(progressInterval);
+                            verifyPayment();
+                        }
+                    }, 100);
+                } else {
+                    console.error("Progress bar not found, starting verification directly");
+                    setTimeout(verifyPayment, 2000);
+                }
+            }
+        
+            // Update progress bar and steps
+            function updateProgress(percent) {
+                console.log(`Updating progress: ${percent}%`);
+                if (progressBar) {
+                    progressBar.style.width = percent + "%";
+                } else {
+                    console.error("Progress bar element not found");
+                }
+        
+                // Update step status
+                if (percent >= 33 && step1 && step2) {
+                    step1.classList.add("completed");
+                    step2.classList.add("active");
+                }
+                if (percent >= 66 && step2 && step3) {
+                    step2.classList.add("completed");
+                    step3.classList.add("active");
+                }
+                if (percent >= 100 && step3) {
+                    step3.classList.add("completed");
+                }
+            }
+        
+            // ✅ PAYMENT VERIFICATION FUNCTION
+            async function verifyPayment() {
+                try {
+                    verificationAttempts++;
+        
+                    console.log(`Verification attempt ${verificationAttempts} of ${maxAttempts}`);
+        
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const requestData = {
+                        order_id: orderId,
+                        payment_method: paymentMethod,
+                        phone_number: urlParams.get('phone') || "N/A",
+                        amount: parseInt(urlParams.get('amount') || "0"),
+                    };
+        
+                    console.log("Sending payment verification request:", requestData);
+        
+                    // Simulate API call - Replace with your actual API endpoint
+                    const response = await simulateAPICall(requestData);
+        
+                    console.log("Response data:", response);
+        
+                    if (response.success) {
+                        // Success
+                        console.log("Payment verified successfully");
+                        if (timerInterval) clearInterval(timerInterval);
+                        showSuccessState(response.transaction_id);
+                    } else {
+                        // Error
+                        console.log("Payment verification failed:", response.message);
+                        if (verificationAttempts < maxAttempts) {
+                            console.log(`Retrying... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
+                            setTimeout(verifyPayment, 2000);
+                        } else {
+                            showErrorState(
+                                response.message || "Payment verification failed after multiple attempts"
+                            );
+                        }
+                    }
+                } catch (error) {
+                    console.error("Payment verification error:", error);
+        
                     if (verificationAttempts < maxAttempts) {
-                        console.log(`Retrying... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
+                        console.log(`Retrying after error... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
                         setTimeout(verifyPayment, 2000);
                     } else {
                         showErrorState(
-                            response.message || "Payment verification failed after multiple attempts"
+                            "Network error. Please check your connection and try again."
                         );
                     }
                 }
-            } catch (error) {
-                console.error("Payment verification error:", error);
-    
-                if (verificationAttempts < maxAttempts) {
-                    console.log(`Retrying after error... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
-                    setTimeout(verifyPayment, 2000);
+            }
+        
+            // Simulate API call - Replace with your actual API
+            async function simulateAPICall(requestData) {
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Simulate random success/failure for demo
+                const isSuccess = Math.random() > 0.3;
+                
+                if (isSuccess) {
+                    return {
+                        success: true,
+                        transaction_id: 'TXN_' + Date.now() + Math.floor(Math.random() * 1000),
+                        message: 'Payment verified successfully'
+                    };
                 } else {
-                    showErrorState(
-                        "Network error. Please check your connection and try again."
-                    );
+                    return {
+                        success: false,
+                        message: 'Payment verification failed. Please try again.'
+                    };
                 }
             }
-        }
-    
-        // Simulate API call - Replace with your actual API
-        async function simulateAPICall(requestData) {
-            // Simulate network delay
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Simulate random success/failure for demo
-            const isSuccess = Math.random() > 0.3;
-            
-            if (isSuccess) {
-                return {
-                    success: true,
-                    transaction_id: 'TXN_' + Date.now() + Math.floor(Math.random() * 1000),
-                    message: 'Payment verified successfully'
-                };
-            } else {
-                return {
-                    success: false,
-                    message: 'Payment verification failed. Please try again.'
-                };
-            }
-        }
-    
-        // Show success state
-        function showSuccessState(transactionId) {
-            console.log("Showing success state");
-            const processingState = document.getElementById("processingState");
-            const successState = document.getElementById("successState");
-    
-            if (processingState) processingState.classList.add("hidden");
-            if (successState) {
-                successState.classList.remove("hidden");
-                const transactionIdElement = document.getElementById("transactionId");
-                if (transactionIdElement) {
-                    transactionIdElement.textContent = transactionId || `AUTO_${orderId}`;
-                }
-            }
-    
-            // Auto redirect after 5 seconds
-            setTimeout(() => {
-                redirectToTrackOrder();
-            }, 5000);
-        }
-    
-        // Show error state
-        function showErrorState(message) {
-            console.log("Showing error state:", message);
-            const processingState = document.getElementById("processingState");
-            const errorState = document.getElementById("errorState");
-    
-            if (processingState) processingState.classList.add("hidden");
-            if (errorState) {
-                errorState.classList.remove("hidden");
-                const errorMessageElement = document.getElementById("errorMessage");
-                if (errorMessageElement) {
-                    errorMessageElement.textContent = message;
-                }
-            }
-    
-            if (timerInterval) clearInterval(timerInterval);
-            if (progressInterval) clearInterval(progressInterval);
-        }
-    
-        // Retry verification
-        function retryVerification() {
-            console.log("Retrying verification");
-            const errorState = document.getElementById("errorState");
-            const processingState = document.getElementById("processingState");
-    
-            if (errorState) errorState.classList.add("hidden");
-            if (processingState) processingState.classList.remove("hidden");
-    
-            // Reset progress
-            progress = 0;
-            updateProgress(0);
-            timerSeconds = 0;
-            if (timerElement) {
-                timerElement.textContent = `Time elapsed: ${timerSeconds} seconds`;
-            }
-            verificationAttempts = 0;
-    
-            // Restart timer
-            if (timerInterval) clearInterval(timerInterval);
-            if (timerElement) {
-                timerInterval = setInterval(() => {
-                    timerSeconds++;
-                    timerElement.textContent = `Time elapsed: ${timerSeconds} seconds`;
-                }, 1000);
-            }
-    
-            // Restart progress
-            if (progressInterval) clearInterval(progressInterval);
-            if (progressBar) {
-                progressInterval = setInterval(() => {
-                    progress += 1;
-                    updateProgress(progress);
-    
-                    if (progress >= 100) {
-                        clearInterval(progressInterval);
-                        verifyPayment();
+        
+            // Show success state
+            function showSuccessState(transactionId) {
+                console.log("Showing success state");
+                const processingState = document.getElementById("processingState");
+                const successState = document.getElementById("successState");
+        
+                if (processingState) processingState.classList.add("hidden");
+                if (successState) {
+                    successState.classList.remove("hidden");
+                    const transactionIdElement = document.getElementById("transactionId");
+                    if (transactionIdElement) {
+                        transactionIdElement.textContent = transactionId || `AUTO_${orderId}`;
                     }
-                }, 100);
-            } else {
-                // If no progress bar, start verification directly
-                setTimeout(verifyPayment, 2000);
+                }
+        
+                // Auto redirect after 5 seconds
+                setTimeout(() => {
+                    redirectToTrackOrder();
+                }, 5000);
             }
-        }
-    
-        // Contact support
-        function contactSupport() {
-            console.log("Contacting support");
-            window.location.href = `mailto:support@socialboostpro.com?subject=Payment Issue - Order ${orderId}`;
-        }
-    
-        // Initialize when page loads
-        window.addEventListener('load', function() {
-            testBackend();
-            initializePaymentProcessing();
-        });
-    
-        // Global functions for buttons
-        window.redirectToTrackOrder = redirectToTrackOrder;
-        window.retryVerification = retryVerification;
-        window.contactSupport = contactSupport;
-    </script>
+        
+            // Show error state
+            function showErrorState(message) {
+                console.log("Showing error state:", message);
+                const processingState = document.getElementById("processingState");
+                const errorState = document.getElementById("errorState");
+        
+                if (processingState) processingState.classList.add("hidden");
+                if (errorState) {
+                    errorState.classList.remove("hidden");
+                    const errorMessageElement = document.getElementById("errorMessage");
+                    if (errorMessageElement) {
+                        errorMessageElement.textContent = message;
+                    }
+                }
+        
+                if (timerInterval) clearInterval(timerInterval);
+                if (progressInterval) clearInterval(progressInterval);
+            }
+        
+            // Retry verification
+            function retryVerification() {
+                console.log("Retrying verification");
+                const errorState = document.getElementById("errorState");
+                const processingState = document.getElementById("processingState");
+        
+                if (errorState) errorState.classList.add("hidden");
+                if (processingState) processingState.classList.remove("hidden");
+        
+                // Reset progress
+                progress = 0;
+                updateProgress(0);
+                timerSeconds = 0;
+                if (timerElement) {
+                    timerElement.textContent = `Time elapsed: ${timerSeconds} seconds`;
+                }
+                verificationAttempts = 0;
+        
+                // Restart timer
+                if (timerInterval) clearInterval(timerInterval);
+                if (timerElement) {
+                    timerInterval = setInterval(() => {
+                        timerSeconds++;
+                        timerElement.textContent = `Time elapsed: ${timerSeconds} seconds`;
+                    }, 1000);
+                }
+        
+                // Restart progress
+                if (progressInterval) clearInterval(progressInterval);
+                if (progressBar) {
+                    progressInterval = setInterval(() => {
+                        progress += 1;
+                        updateProgress(progress);
+        
+                        if (progress >= 100) {
+                            clearInterval(progressInterval);
+                            verifyPayment();
+                        }
+                    }, 100);
+                } else {
+                    // If no progress bar, start verification directly
+                    setTimeout(verifyPayment, 2000);
+                }
+            }
+        
+            // Contact support
+            function contactSupport() {
+                console.log("Contacting support");
+                window.location.href = `mailto:support@socialboostpro.com?subject=Payment Issue - Order ${orderId}`;
+            }
+        
+            // Initialize when page loads
+            window.addEventListener('load', function() {
+                testBackend();
+                initializePaymentProcessing();
+            });
+        
+            // Global functions for buttons
+            window.redirectToTrackOrder = redirectToTrackOrder;
+            window.retryVerification = retryVerification;
+            window.contactSupport = contactSupport;
+        </script>
 </body>
 </html>
