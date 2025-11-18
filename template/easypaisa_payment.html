@@ -412,15 +412,15 @@
           <div class="info-grid">
             <div class="info-item">
               <strong>Your Order ID:</strong>
-              <span>{{ order_id }}</span>
+              <span id="displayOrderId">Loading...</span>
             </div>
             <div class="info-item">
               <strong>Send to JazzCash:</strong>
-              <span>{{ jazzcash_number }}</span>
+              <span id="displayJazzcashNumber">03432356092</span>
             </div>
             <div class="info-item">
               <strong>Amount to Pay:</strong>
-              <span>Rs. {{ order.total_amount if order else '___' }}</span>
+              <span id="displayAmount">Loading...</span>
             </div>
             <div class="info-item">
               <strong>Status:</strong>
@@ -459,7 +459,7 @@
           <div class="step">
             <div class="step-number">3</div>
             <div class="step-content">
-              Enter this <strong>JazzCash number: {{ jazzcash_number }}</strong>
+              Enter this <strong>JazzCash number: <span id="jazzcashNumber">03432356092</span></strong>
             </div>
           </div>
           <div class="step">
@@ -467,8 +467,7 @@
             <div class="step-content">
               Enter the
               <strong
-                >exact amount: Rs. {{ order.total_amount if order else '___'
-                }}</strong
+                >exact amount: Rs. <span id="paymentAmount">Loading...</span></strong
               >
             </div>
           </div>
@@ -476,7 +475,7 @@
             <div class="step-number">5</div>
             <div class="step-content">
               In <strong>Reference/Message</strong>, write:
-              <strong>{{ order_id }}</strong>
+              <strong id="referenceOrderId">Loading...</strong>
             </div>
           </div>
           <div class="step">
@@ -493,12 +492,11 @@
               Payment received hone ke baad order automatically process hojayega
             </li>
             <li>
-              Exact amount enter karna (Rs. {{ order.total_amount if order else
-              '___' }})
+              Exact amount enter karna (Rs. <span id="exactAmount">Loading...</span>)
             </li>
             <li>
               Reference me Order ID zaroor likhna:
-              <strong>{{ order_id }}</strong>
+              <strong id="referenceId">Loading...</strong>
             </li>
             <li>
               Payment verify hone ke baad order 24 hours mein complete hojayega
@@ -555,122 +553,125 @@
     </div>
 
     <script>
-      // ✅ BACKEND API CONFIGURATION
-const API_BASE = 'https://python22.pythonanywhere.com';
+      // ✅ GET URL PARAMETERS
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('order_id');
+      const platform = urlParams.get('platform');
+      const service = urlParams.get('service');
+      const quantity = urlParams.get('quantity');
+      const username = urlParams.get('username');
+      const amount = urlParams.get('amount');
+      const phone = urlParams.get('phone');
 
-// ✅ TEST BACKEND CONNECTION
-async function testBackend() {
-    try {
-        const response = await fetch(`${API_BASE}/test`);
-        
-        // Pehle text mein receive karo
-        const text = await response.text();
-        console.log('✅ Backend connected:', text);
-        
-        // Phir JSON try karo
-        try {
-            const data = JSON.parse(text);
-            console.log('✅ Backend JSON:', data);
-        } catch {
-            console.log('✅ Backend Text:', text);
-        }
-        
-    } catch (error) {
-        console.error('❌ Backend connection failed:', error);
-    }
-}
+      // ✅ JAZZCASH NUMBER
+      const JAZZCASH_NUMBER = "03432356092";
 
-// Page load pe test karo
-window.addEventListener('load', testBackend);
-   
-   
-      document
-        .getElementById("paymentForm")
-        .addEventListener("submit", async function (e) {
+      // ✅ INITIALIZE PAGE
+      document.addEventListener('DOMContentLoaded', function() {
+          initializePaymentPage();
+      });
+
+      function initializePaymentPage() {
+          // Update page with order details
+          if (orderId) {
+              document.getElementById('displayOrderId').textContent = orderId;
+              document.getElementById('referenceOrderId').textContent = orderId;
+              document.getElementById('referenceId').textContent = orderId;
+          }
+
+          if (amount) {
+              document.getElementById('displayAmount').textContent = 'Rs. ' + amount;
+              document.getElementById('paymentAmount').textContent = amount;
+              document.getElementById('exactAmount').textContent = amount;
+              
+              // Set amount field value
+              document.getElementById('amount').value = amount;
+          }
+
+          // Set JazzCash number
+          document.getElementById('jazzcashNumber').textContent = JAZZCASH_NUMBER;
+
+          console.log('Payment Page Initialized:', {
+              orderId, platform, service, quantity, username, amount, phone
+          });
+      }
+
+      // ✅ PAYMENT FORM SUBMISSION
+      document.getElementById("paymentForm").addEventListener("submit", async function (e) {
           e.preventDefault();
 
-          const phoneNumber = document
-            .getElementById("phoneNumber")
-            .value.trim();
-          const amount = document.getElementById("amount").value.trim();
+          const phoneNumber = document.getElementById("phoneNumber").value.trim();
+          const enteredAmount = document.getElementById("amount").value.trim();
           const button = document.getElementById("submitBtn");
 
           // Validation
-          if (!phoneNumber || !amount) {
-            alert("Please fill all fields");
-            return;
+          if (!phoneNumber || !enteredAmount) {
+              alert("❌ Please fill all fields");
+              return;
           }
 
           if (!phoneNumber.match(/^03[0-9]{9}$/)) {
-            alert(" Please enter valid Pakistani phone number");
-            return;
+              alert("❌ Please enter valid Pakistani phone number");
+              return;
           }
 
-          if (amount <= 0) {
-            alert("Please enter valid amount");
-            return;
+          if (enteredAmount <= 0) {
+              alert("❌ Please enter valid amount");
+              return;
+          }
+
+          // Check if entered amount matches order amount
+          if (amount && parseInt(enteredAmount) !== parseInt(amount)) {
+              alert("❌ Amount does not match order total. Please enter exact amount: Rs. " + amount);
+              return;
           }
 
           // Show loading
-          button.innerHTML =
-            '<i class="fas fa-spinner fa-spin"></i> Verifying Payment...';
+          button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying Payment...';
           button.disabled = true;
 
           try {
-            const response = await fetch("/api/verify-payment", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-              },
-              body: JSON.stringify({
-                order_id: "{{ order_id }}",
-                payment_method: "easypaisa",
-                phone_number: phoneNumber,
-                amount: parseInt(amount),
-                // TRANSACTION ID REMOVED - Auto generate karenge backend mein
-              }),
-            });
+              // ✅ SIMULATE PAYMENT VERIFICATION
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              
+              // ✅ SUCCESS - REDIRECT TO PROCESSING PAGE
+              window.location.href = `payment_processing.html?order_id=${orderId}&method=easypaisa&phone=${phoneNumber}&amount=${enteredAmount}&platform=${platform}&service=${service}&quantity=${quantity}&username=${username}`;
 
-            const data = await response.json();
-
-            if (data.success) {
-              // Show success message
-              alert(
-                " Payment Verified Successfully! Order processing shuru hogaya."
-              );
-
-              // Redirect to processing page
-              window.location.href =
-                "/payment-processing?order_id={{ order_id }}&method=easypaisa";
-            } else {
-              alert(" Error: " + data.message);
-            }
           } catch (error) {
-            console.error("Payment verification error:", error);
-            alert(
-              " Network error. Please check your connection and try again."
-            );
+              console.error("Payment verification error:", error);
+              alert("❌ Network error. Please check your connection and try again.");
           } finally {
-            button.innerHTML =
-              '<i class="fas fa-check-circle"></i> Confirm Payment';
-            button.disabled = false;
+              button.innerHTML = '<i class="fas fa-check-circle"></i> Confirm Payment';
+              button.disabled = false;
           }
-        });
+      });
+
+      // ✅ INPUT FORMATTING
+      document.getElementById("phoneNumber").addEventListener("input", function (e) {
+          this.value = this.value.replace(/[^0-9]/g, "");
+      });
+
+      document.getElementById("amount").addEventListener("input", function (e) {
+          this.value = this.value.replace(/[^0-9]/g, "");
+      });
 
       // Auto-focus on phone number field
       document.getElementById("phoneNumber").focus();
 
-      // Add input formatting
-      document
-        .getElementById("phoneNumber")
-        .addEventListener("input", function (e) {
-          this.value = this.value.replace(/[^0-9]/g, "");
-        });
+      // ✅ BACKEND TEST (Optional)
+      async function testBackend() {
+          try {
+              const API_BASE = 'https://python22.pythonanywhere.com';
+              const response = await fetch(`${API_BASE}/test`);
+              const text = await response.text();
+              console.log('✅ Backend connected:', text);
+          } catch (error) {
+              console.error('❌ Backend connection failed:', error);
+          }
+      }
 
-      document.getElementById("amount").addEventListener("input", function (e) {
-        this.value = this.value.replace(/[^0-9]/g, "");
-      });
+      // Test backend on load
+      window.addEventListener('load', testBackend);
     </script>
   </body>
 </html>
