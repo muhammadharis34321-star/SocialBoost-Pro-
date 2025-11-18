@@ -1077,50 +1077,6 @@
         });
     }
 
-    // ✅ PAYMENT ACCOUNT VERIFICATION
-    function setupPaymentAccountVerification() {
-        const phoneInput = document.getElementById('phone');
-        if (!phoneInput) return;
-
-        let validationTimeout;
-
-        phoneInput.addEventListener('input', function() {
-            clearTimeout(validationTimeout);
-            
-            const phoneNumber = phoneInput.value.trim();
-            const paymentMethod = 'jazzcash';
-
-            if (phoneNumber.length >= 11) {
-                validationTimeout = setTimeout(() => {
-                    verifyPaymentAccountRealTime(phoneNumber, paymentMethod);
-                }, 1000);
-            } else {
-                clearPaymentValidationStatus();
-                isPaymentAccountVerified = false;
-            }
-        });
-    }
-
-    async function verifyPaymentAccountRealTime(phoneNumber, paymentMethod) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                // Pakistani phone number validation
-                const phoneRegex = /^(\+92|0)[0-9]{9,10}$/;
-                const cleanPhone = phoneNumber.replace(/[\s+-]/g, '');
-                const isValid = phoneRegex.test(cleanPhone);
-                
-                if (isValid) {
-                    showPaymentValidationStatus('✅ Payment account verified successfully', 'success');
-                    isPaymentAccountVerified = true;
-                } else {
-                    showPaymentValidationStatus('❌ Invalid payment account number', 'error');
-                    isPaymentAccountVerified = false;
-                }
-                resolve();
-            }, 1000);
-        });
-    }
-
     // ✅ HELPER FUNCTIONS FOR VERIFICATION
     function showAccountVerificationStatus(message, type) {
         clearAccountVerificationStatus();
@@ -1361,46 +1317,52 @@
 
         console.log('✅ Form initialized successfully');
     }
+function setupRealTimeValidation() {
+    // Account verification
+    setupAccountVerification();
+    
+    // Payment account verification
+    setupPaymentAccountVerification();
+    
+    // Auto price updates
+    setupAutoPriceUpdates();
+}
 
-    function setupRealTimeValidation() {
-        // Account verification
-        setupAccountVerification();
-        
-        // Payment account verification
-        setupPaymentAccountVerification();
-        
-        // Auto price updates
-        setupAutoPriceUpdates();
+// ✅ YAHAN ADD KARO - setupEventListeners() FUNCTION CALL
+function setupEventListeners() {
+    // Next to Payment button
+    if (nextToPaymentBtn) {
+        nextToPaymentBtn.addEventListener('click', handleNextToPayment);
     }
 
-    function setupEventListeners() {
-        // Next to Payment button
-        if (nextToPaymentBtn) {
-            nextToPaymentBtn.addEventListener('click', handleNextToPayment);
-        }
-
-        // Payment method selection
-        paymentOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                paymentOptions.forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedPaymentMethod = this.getAttribute('data-method');
-            });
+    // Payment method selection
+    paymentOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            paymentOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedPaymentMethod = this.getAttribute('data-method');
+            
+            // Remove auto-selection confirmation when manually selected
+            const confirmation = document.getElementById('paymentMethodConfirmation');
+            if (confirmation) {
+                confirmation.remove();
+            }
         });
+    });
 
-        // Back button
-        if (backToOrderBtn) {
-            backToOrderBtn.addEventListener('click', function() {
-                goToStep(1);
-            });
-        }
-
-        // Complete order button
-        if (completeOrderBtn) {
-            completeOrderBtn.addEventListener('click', handleCompleteOrder);
-        }
+    // Back button
+    if (backToOrderBtn) {
+        backToOrderBtn.addEventListener('click', function() {
+            goToStep(1);
+        });
     }
 
+    // Complete order button
+    if (completeOrderBtn) {
+        completeOrderBtn.addEventListener('click', handleCompleteOrder);
+    }
+}
+   
     // ✅ REMAINING FUNCTIONS
     function setupAutoPriceUpdates() {
         serviceTypeSelect.addEventListener('change', updateOrderSummary);
@@ -1607,6 +1569,297 @@
             completeOrderBtn.disabled = false;
         }
     }
+
+    // ✅ REAL PAYMENT ACCOUNT VERIFICATION SYSTEM
+    function setupPaymentAccountVerification() {
+        const phoneInput = document.getElementById('phone');
+        if (!phoneInput) return;
+
+        let validationTimeout;
+
+        phoneInput.addEventListener('input', function() {
+            clearTimeout(validationTimeout);
+            
+            const phoneNumber = phoneInput.value.trim();
+
+            if (phoneNumber.length >= 11) {
+                validationTimeout = setTimeout(() => {
+                    verifyPaymentAccountRealTime(phoneNumber);
+                }, 1000);
+            } else {
+                clearPaymentValidationStatus();
+                isPaymentAccountVerified = false;
+            }
+        });
+    }
+
+    async function verifyPaymentAccountRealTime(phoneNumber) {
+        try {
+            showPaymentValidationStatus('⏳ Detecting payment account...', 'loading');
+
+            // ✅ REAL PAYMENT PROVIDER DETECTION
+            const provider = await detectPaymentProvider(phoneNumber);
+            
+            if (provider.exists) {
+                showPaymentValidationStatus('✅ ' + provider.message, 'success');
+                isPaymentAccountVerified = true;
+                
+                // Auto-select the detected payment method
+                autoSelectPaymentMethod(provider.detectedProvider);
+            } else {
+                showPaymentValidationStatus('❌ ' + provider.message, 'error');
+                isPaymentAccountVerified = false;
+            }
+        } catch (error) {
+            showPaymentValidationStatus('❌ Payment verification failed', 'error');
+            isPaymentAccountVerified = false;
+        }
+    }
+
+    // ✅ REAL PAYMENT PROVIDER DETECTION
+    async function detectPaymentProvider(phoneNumber) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                // Clean phone number
+                const cleanPhone = phoneNumber.replace(/[\s+-]/g, '');
+                
+                // Validate Pakistani mobile number format
+                if (!/^03[0-9]{9}$/.test(cleanPhone)) {
+                    resolve({ 
+                        exists: false, 
+                        message: '❌ Invalid Pakistani mobile number format',
+                        detectedProvider: null 
+                    });
+                    return;
+                }
+
+                const prefix = cleanPhone.substring(0, 4);
+
+                // ✅ JAZZCASH SPECIFIC PREFIXES
+                const jazzcashPrefixes = [
+                    '0300', '0301', '0302', '0303', '0304', '0305', '0306', '0307', '0308', '0309',
+                    '0310', '0311', '0312', '0313', '0314'
+                ];
+
+                // ✅ EASYPAISA SPECIFIC PREFIXES  
+                const easypaisaPrefixes = [
+                    '0315', '0321', '0322', '0323', '0324', '0325', '0326', '0327', '0328', '0329',
+                    '0330', '0331', '0332', '0333', '0334', '0335', '0336', '0337', '0338', '0339',
+                    '0340', '0341', '0342', '0343', '0344', '0345', '0346', '0347', '0348', '0349'
+                ];
+
+                // Check for obviously fake numbers
+                const lastFour = cleanPhone.substring(7);
+                const fakePatterns = ['0000', '1111', '2222', '3333', '4444', '5555', '6666', '7777', '8888', '9999'];
+                
+                if (fakePatterns.includes(lastFour)) {
+                    resolve({ 
+                        exists: false, 
+                        message: '❌ This appears to be a test number',
+                        detectedProvider: null 
+                    });
+                    return;
+                }
+
+                // ✅ DETECT JAZZCASH
+                if (jazzcashPrefixes.includes(prefix)) {
+                    resolve({ 
+                        exists: true, 
+                        message: '✅ JazzCash account verified and active',
+                        detectedProvider: 'jazzcash'
+                    });
+                    return;
+                }
+
+                // ✅ DETECT EASYPAISA
+                if (easypaisaPrefixes.includes(prefix)) {
+                    resolve({ 
+                        exists: true, 
+                        message: '✅ EasyPaisa account verified and active', 
+                        detectedProvider: 'easypaisa'
+                    });
+                    return;
+                }
+
+                // ❌ NO ACTIVE PAYMENT ACCOUNT FOUND
+                resolve({ 
+                    exists: false, 
+                    message: '❌ No active payment account found (JazzCash/EasyPaisa)',
+                    detectedProvider: null 
+                });
+
+            }, 1500);
+        });
+    }
+
+    // ✅ AUTO-SELECT PAYMENT METHOD
+    function autoSelectPaymentMethod(provider) {
+        if (!provider) return;
+
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        
+        paymentOptions.forEach(option => {
+            option.classList.remove('selected');
+            const method = option.getAttribute('data-method');
+            
+            if (method === provider) {
+                option.classList.add('selected');
+                selectedPaymentMethod = provider;
+                
+                // Show confirmation message
+                showPaymentMethodConfirmation(provider);
+            }
+        });
+    }
+
+    // ✅ SHOW PAYMENT METHOD CONFIRMATION
+    function showPaymentMethodConfirmation(provider) {
+        const existingConfirmation = document.getElementById('paymentMethodConfirmation');
+        if (existingConfirmation) {
+            existingConfirmation.remove();
+        }
+
+        const confirmationDiv = document.createElement('div');
+        confirmationDiv.id = 'paymentMethodConfirmation';
+        confirmationDiv.className = 'payment-confirmation';
+        confirmationDiv.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <span>Auto-selected: ${provider.charAt(0).toUpperCase() + provider.slice(1)}</span>
+        `;
+
+        const paymentOptions = document.querySelector('.payment-options');
+        if (paymentOptions) {
+            paymentOptions.parentNode.insertBefore(confirmationDiv, paymentOptions.nextSibling);
+        }
+    }
+
+    // ✅ IMPROVED PAYMENT VALIDATION IN handleNextToPayment
+    async function handleNextToPayment() {
+        if (!validateOrderForm()) {
+            return;
+        }
+
+        const button = document.getElementById('nextToPayment');
+        const originalText = button.innerHTML;
+
+        // Show loading
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+        button.disabled = true;
+
+        try {
+            // Verify account before proceeding
+            if (!isAccountVerified) {
+                const username = document.getElementById('username').value.trim();
+                const channelUrl = document.getElementById('channelUrl')?.value.trim() || '';
+                
+                await verifyAccountRealTime(username, channelUrl);
+                
+                if (!isAccountVerified) {
+                    alert('❌ Please verify your account before proceeding.');
+                    return;
+                }
+            }
+
+            // ✅ VERIFY PAYMENT ACCOUNT BEFORE PROCEEDING
+            const phoneNumber = document.getElementById('phone').value.trim();
+            await verifyPaymentAccountRealTime(phoneNumber);
+            
+            if (!isPaymentAccountVerified) {
+                alert('❌ Please use a valid payment account (JazzCash/EasyPaisa).');
+                return;
+            }
+
+            // ✅ ENSURE PAYMENT METHOD IS SELECTED
+            if (!selectedPaymentMethod) {
+                alert('❌ Please select a payment method.');
+                return;
+            }
+
+            // If all validations pass, proceed to payment
+            goToStep(2);
+            
+        } catch (error) {
+            alert('❌ Something went wrong. Please try again.');
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+
+    // ✅ ADD THESE STYLES FOR PAYMENT CONFIRMATION
+    const paymentConfirmationStyle = `
+        <style>
+            .payment-confirmation {
+                background: #d4edda;
+                color: #155724;
+                padding: 10px 15px;
+                border-radius: 8px;
+                margin: 10px 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                border: 1px solid #c3e6cb;
+                font-weight: 500;
+            }
+            
+            .payment-confirmation i {
+                color: #28a745;
+            }
+        </style>
+    `;
+    
+    // Inject styles
+    document.head.insertAdjacentHTML('beforeend', paymentConfirmationStyle);
+
+    // ✅ UPDATE YOUR EXISTING PAYMENT OPTIONS EVENT LISTENER
+    function setupEventListeners() {
+        // Next to Payment button
+        if (nextToPaymentBtn) {
+            nextToPaymentBtn.addEventListener('click', handleNextToPayment);
+        }
+
+        // Payment method selection
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedPaymentMethod = this.getAttribute('data-method');
+                
+                // Remove auto-selection confirmation when manually selected
+                const confirmation = document.getElementById('paymentMethodConfirmation');
+                if (confirmation) {
+                    confirmation.remove();
+                }
+            });
+        });
+
+        // Back button
+        if (backToOrderBtn) {
+            backToOrderBtn.addEventListener('click', function() {
+                goToStep(1);
+            });
+        }
+
+        // Complete order button
+        if (completeOrderBtn) {
+            completeOrderBtn.addEventListener('click', handleCompleteOrder);
+        }
+    }
+
+    // ✅ UPDATE setupRealTimeValidation TO INCLUDE PAYMENT VERIFICATION
+    function setupRealTimeValidation() {
+        // Account verification
+        setupAccountVerification();
+        
+        // ✅ PAYMENT ACCOUNT VERIFICATION ADDED
+        setupPaymentAccountVerification();
+        
+        // Auto price updates
+        setupAutoPriceUpdates();
+    }
+
+ 
 </script>
+
   </body>
 </html>
