@@ -700,17 +700,17 @@
     
                     <button
                         class="btn btn-warning"
-                        onclick="retryVerification()"
+                        onclick="redirectToPaymentPage()"
                     >
-                        <i class="fas fa-redo"></i> Try Again
+                        <i class="fas fa-credit-card"></i> Make Payment Now
                     </button>
     
                     <button
                         class="btn btn-dark"
-                        onclick="contactSupport()"
+                        onclick="retryVerification()"
                         style="margin-left: 10px"
                     >
-                        <i class="fas fa-headset"></i> Contact Support
+                        <i class="fas fa-redo"></i> Check Again
                     </button>
                 </div>
     
@@ -782,6 +782,41 @@
                 } else {
                     window.location.href = `track_order.html?order_id=${orderId}`;
                 }
+            }
+
+            // ✅ REDIRECT TO PAYMENT PAGE BASED ON METHOD
+            function redirectToPaymentPage() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const amount = urlParams.get('amount') || '0';
+                const platform = urlParams.get('platform') || 'TikTok';
+                const service = urlParams.get('service') || 'followers';
+                const quantity = urlParams.get('quantity') || '1';
+                const username = urlParams.get('username') || 'N/A';
+                const phone = urlParams.get('phone') || 'N/A';
+                
+                // Determine which payment page to redirect to
+                let paymentPage = '';
+                if (paymentMethod === 'jazzcash') {
+                    paymentPage = 'jazzcash_payment.html';
+                } else if (paymentMethod === 'easypaisa') {
+                    paymentPage = 'easypaisa_payment.html';
+                } else {
+                    paymentPage = 'jazzcash_payment.html'; // default
+                }
+                
+                // Build URL with all parameters
+                const params = new URLSearchParams({
+                    order_id: orderId,
+                    amount: amount,
+                    platform: platform,
+                    service: service,
+                    quantity: quantity,
+                    username: username,
+                    phone: phone,
+                    method: paymentMethod
+                });
+                
+                window.location.href = `${paymentPage}?${params.toString()}`;
             }
         
             // Initialize payment processing
@@ -947,13 +982,31 @@ async function verifyPayment() {
         } else {
             // ❌ Payment not found
             console.log("Payment verification failed:", result.message);
-            if (verificationAttempts < maxAttempts) {
-                console.log(`Retrying... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
-                setTimeout(verifyPayment, 5000); // 5 seconds wait
+            
+            // Check if we should redirect to payment page
+            if (result.message && result.message.includes("Payment not found") || 
+                result.message.includes("Please make payment")) {
+                
+                if (verificationAttempts >= maxAttempts) {
+                    showErrorState(
+                        "Payment not found. Please make the payment first to proceed.",
+                        true // show payment button
+                    );
+                } else {
+                    console.log(`Retrying... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
+                    setTimeout(verifyPayment, 5000); // 5 seconds wait
+                }
             } else {
-                showErrorState(
-                    result.message || "Payment not found. Please make sure you have sent the payment."
-                );
+                // Other errors
+                if (verificationAttempts < maxAttempts) {
+                    console.log(`Retrying... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
+                    setTimeout(verifyPayment, 5000);
+                } else {
+                    showErrorState(
+                        result.message || "Payment verification failed. Please try again.",
+                        true
+                    );
+                }
             }
         }
     } catch (error) {
@@ -964,33 +1017,12 @@ async function verifyPayment() {
             setTimeout(verifyPayment, 5000);
         } else {
             showErrorState(
-                "Network error. Please check your connection and try again."
+                "Network error. Please check your connection and try again.",
+                true
             );
         }
     }
 }
-        
-            // Simulate API call - Replace with your actual API
-            async function simulateAPICall(requestData) {
-                // Simulate network delay
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                // Simulate random success/failure for demo
-                const isSuccess = Math.random() > 0.3;
-                
-                if (isSuccess) {
-                    return {
-                        success: true,
-                        transaction_id: 'TXN_' + Date.now() + Math.floor(Math.random() * 1000),
-                        message: 'Payment verified successfully'
-                    };
-                } else {
-                    return {
-                        success: false,
-                        message: 'Payment verification failed. Please try again.'
-                    };
-                }
-            }
         
             // Show success state
             function showSuccessState(transactionId) {
@@ -1014,7 +1046,7 @@ async function verifyPayment() {
             }
         
             // Show error state
-            function showErrorState(message) {
+            function showErrorState(message, showPaymentButton = false) {
                 console.log("Showing error state:", message);
                 const processingState = document.getElementById("processingState");
                 const errorState = document.getElementById("errorState");
@@ -1025,6 +1057,22 @@ async function verifyPayment() {
                     const errorMessageElement = document.getElementById("errorMessage");
                     if (errorMessageElement) {
                         errorMessageElement.textContent = message;
+                    }
+                    
+                    // Update buttons based on whether to show payment button
+                    const paymentButton = errorState.querySelector('.btn-warning');
+                    const retryButton = errorState.querySelector('.btn-dark');
+                    
+                    if (paymentButton && retryButton) {
+                        if (showPaymentButton) {
+                            paymentButton.innerHTML = '<i class="fas fa-credit-card"></i> Make Payment Now';
+                            paymentButton.onclick = redirectToPaymentPage;
+                            retryButton.style.display = 'inline-block';
+                        } else {
+                            paymentButton.innerHTML = '<i class="fas fa-redo"></i> Try Again';
+                            paymentButton.onclick = retryVerification;
+                            retryButton.style.display = 'none';
+                        }
                     }
                 }
         
@@ -1077,12 +1125,6 @@ async function verifyPayment() {
                 }
             }
         
-            // Contact support
-            function contactSupport() {
-                console.log("Contacting support");
-                window.location.href = `mailto:support@socialboostpro.com?subject=Payment Issue - Order ${orderId}`;
-            }
-        
             // Initialize when page loads
             window.addEventListener('load', function() {
                 testBackend();
@@ -1091,8 +1133,8 @@ async function verifyPayment() {
         
             // Global functions for buttons
             window.redirectToTrackOrder = redirectToTrackOrder;
+            window.redirectToPaymentPage = redirectToPaymentPage;
             window.retryVerification = retryVerification;
-            window.contactSupport = contactSupport;
         </script>
 </body>
 </html>
