@@ -518,7 +518,6 @@
     </div>
 
     <script>
-      // ✅ GET URL PARAMETERS
       const urlParams = new URLSearchParams(window.location.search);
       const orderId = urlParams.get('order_id');
       const platform = urlParams.get('platform');
@@ -528,7 +527,7 @@
       const amount = urlParams.get('amount');
       const phone = urlParams.get('phone');
 
-      // ✅ JAZZCASH NUMBER
+     
       const JAZZCASH_NUMBER = "03432356092";
 
       // ✅ INITIALIZE PAGE
@@ -537,7 +536,7 @@
       });
 
       function initializePaymentPage() {
-          // Update page with order details
+        
           if (orderId) {
               document.getElementById('displayOrderId').textContent = orderId;
               document.getElementById('referenceOrderId').textContent = orderId;
@@ -549,7 +548,7 @@
               document.getElementById('paymentAmount').textContent = amount;
               document.getElementById('exactAmount').textContent = amount;
               
-              // Set amount field value
+         
               document.getElementById('amount').value = amount;
           }
 
@@ -567,7 +566,7 @@
           }
       }
 
-      // ✅ PAYMENT FORM SUBMISSION
+      // PAYMENT FORM SUBMISSION
       document.getElementById("paymentForm").addEventListener("submit", async function (e) {
           e.preventDefault();
 
@@ -602,10 +601,10 @@
           button.disabled = true;
 
           try {
-              // ✅ SIMULATE PAYMENT VERIFICATION
+              //  SIMULATE PAYMENT VERIFICATION
               await new Promise(resolve => setTimeout(resolve, 2000));
               
-              // ✅ SUCCESS - REDIRECT TO PROCESSING PAGE
+              //  SUCCESS - REDIRECT TO PROCESSING PAGE
               window.location.href = `payment_processing.html?order_id=${orderId}&method=jazzcash&phone=${phoneNumber}&amount=${enteredAmount}&platform=${platform}&service=${service}&quantity=${quantity}&username=${username}`;
 
           } catch (error) {
@@ -617,7 +616,7 @@
           }
       });
 
-      // ✅ INPUT FORMATTING
+      // INPUT FORMATTING
       document.getElementById("phoneNumber").addEventListener("input", function (e) {
           this.value = this.value.replace(/[^0-9]/g, "");
       });
@@ -629,7 +628,7 @@
       // Auto-focus on phone number field
       document.getElementById("phoneNumber").focus();
 
-      // ✅ BACKEND TEST (Optional)
+      //  BACKEND TEST (Optional)
       async function testBackend() {
           try {
               const API_BASE = 'https://python22.pythonanywhere.com';
@@ -644,7 +643,7 @@
       // Test backend on load
       window.addEventListener('load', testBackend);
 
-      // ✅ REAL-TIME VALIDATION
+      //  REAL-TIME VALIDATION
       document.getElementById('phoneNumber').addEventListener('blur', function() {
           const phone = this.value.trim();
           if (phone && !phone.match(/^03[0-9]{9}$/)) {
