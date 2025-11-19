@@ -999,11 +999,11 @@
         // Update summary
         updateOrderSummary();
 
-        console.log('✅ Form initialized successfully');
+        console.log('Form initialized successfully');
     }
 
     function setupEventListeners() {
-        console.log('🔗 Setting up event listeners');
+        console.log(' Setting up event listeners');
         
         // Next to Payment button
         if (nextToPaymentBtn) {
@@ -1040,7 +1040,7 @@
     }
 
     function setupRealTimeValidation() {
-        console.log('🔍 Setting up real-time validation');
+        console.log(' Setting up real-time validation');
         
         // Account verification
         setupAccountVerification();
@@ -1102,22 +1102,22 @@
             }
             
             if (result.exists) {
-                showAccountVerificationStatus('✅ ' + result.message, 'success');
+                showAccountVerificationStatus(' ' + result.message, 'success');
                 isAccountVerified = true;
                 addVerificationBadge();
             } else {
-                showAccountVerificationStatus('❌ ' + result.message, 'error');
+                showAccountVerificationStatus(' ' + result.message, 'error');
                 isAccountVerified = false;
                 clearVerificationBadge();
             }
         } catch (error) {
-            showAccountVerificationStatus('❌ Verification failed', 'error');
+            showAccountVerificationStatus(' Verification failed', 'error');
             isAccountVerified = false;
             clearVerificationBadge();
         }
     }
 
-    // ✅ PAYMENT ACCOUNT VERIFICATION
+    //  PAYMENT ACCOUNT VERIFICATION
     function setupPaymentAccountVerification() {
         const phoneInput = document.getElementById('phone');
         if (!phoneInput) return;
@@ -1142,7 +1142,7 @@
 
     async function verifyPaymentAccountRealTime(phoneNumber) {
         try {
-            showPaymentValidationStatus('⏳ Checking payment account...', 'loading');
+            showPaymentValidationStatus(' Checking payment account...', 'loading');
 
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 1500));
@@ -1150,15 +1150,15 @@
             const provider = await detectPaymentProvider(phoneNumber);
             
             if (provider.exists) {
-                showPaymentValidationStatus('✅ ' + provider.message, 'success');
+                showPaymentValidationStatus(' ' + provider.message, 'success');
                 isPaymentAccountVerified = true;
                 autoSelectPaymentMethod(provider.detectedProvider);
             } else {
-                showPaymentValidationStatus('❌ ' + provider.message, 'error');
+                showPaymentValidationStatus(' ' + provider.message, 'error');
                 isPaymentAccountVerified = false;
             }
         } catch (error) {
-            showPaymentValidationStatus('❌ Payment verification failed', 'error');
+            showPaymentValidationStatus(' Payment verification failed', 'error');
             isPaymentAccountVerified = false;
         }
     }
@@ -1172,7 +1172,7 @@
                 if (!/^03[0-9]{9}$/.test(cleanPhone)) {
                     resolve({ 
                         exists: false, 
-                        message: '❌ Invalid Pakistani mobile number',
+                        message: ' Invalid Pakistani mobile number',
                         detectedProvider: null 
                     });
                     return;
@@ -1200,7 +1200,7 @@
                 if (fakePatterns.includes(lastFour)) {
                     resolve({ 
                         exists: false, 
-                        message: '❌ This appears to be a test number',
+                        message: ' This appears to be a test number',
                         detectedProvider: null 
                     });
                     return;
@@ -1210,7 +1210,7 @@
                 if (jazzcashPrefixes.includes(prefix)) {
                     resolve({ 
                         exists: true, 
-                        message: '✅ JazzCash account verified',
+                        message: ' JazzCash account verified',
                         detectedProvider: 'jazzcash'
                     });
                     return;
@@ -1220,7 +1220,7 @@
                 if (easypaisaPrefixes.includes(prefix)) {
                     resolve({ 
                         exists: true, 
-                        message: '✅ EasyPaisa account verified', 
+                        message: ' EasyPaisa account verified', 
                         detectedProvider: 'easypaisa'
                     });
                     return;
@@ -1228,7 +1228,7 @@
 
                 resolve({ 
                     exists: false, 
-                    message: '❌ No active payment account found',
+                    message: ' No active payment account found',
                     detectedProvider: null 
                 });
 
@@ -1278,7 +1278,7 @@
                 await verifyAccountRealTime(username, channelUrl);
                 
                 if (!isAccountVerified) {
-                    alert('❌ Please verify your account before proceeding.');
+                    alert(' Please verify your account before proceeding.');
                     return;
                 }
             }
@@ -1288,23 +1288,23 @@
             await verifyPaymentAccountRealTime(phoneNumber);
             
             if (!isPaymentAccountVerified) {
-                alert('❌ Please use a valid payment account (JazzCash/EasyPaisa).');
+                alert(' Please use a valid payment account (JazzCash/EasyPaisa).');
                 return;
             }
 
             // Ensure payment method is selected
             if (!selectedPaymentMethod) {
-                alert('❌ Please select a payment method.');
+                alert(' Please select a payment method.');
                 return;
             }
 
             // If all validations pass, proceed to payment
-            console.log('✅ All validations passed, going to step 2');
+            console.log('All validations passed, going to step 2');
             goToStep(2);
             
         } catch (error) {
-            console.error('❌ Error in next to payment:', error);
-            alert('❌ Something went wrong. Please try again.');
+            console.error(' Error in next to payment:', error);
+            alert('Something went wrong. Please try again.');
         } finally {
             button.innerHTML = originalText;
             button.disabled = false;
@@ -1313,11 +1313,11 @@
 
     // ✅ COMPLETE ORDER HANDLER - FIXED VERSION
     async function handleCompleteOrder() {
-        console.log('🎯 Complete order clicked');
+        console.log(' Complete order clicked');
         console.log('Selected payment method:', selectedPaymentMethod);
 
         if (!selectedPaymentMethod) {
-            alert('❌ Please select a payment method');
+            alert(' Please select a payment method');
             return;
         }
 
@@ -1349,7 +1349,7 @@
             formData.channel_url = document.getElementById('channelUrl').value;
         }
 
-        console.log('📦 Order data collected:', formData);
+        console.log(' Order data collected:', formData);
 
         // Show loading
         completeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Order...';
@@ -1358,7 +1358,7 @@
         try {
             // ✅ GENERATE ORDER ID
             const orderId = 'SB' + Date.now() + Math.floor(100 + Math.random() * 900);
-            console.log('🆕 Generated Order ID:', orderId);
+            console.log(' Generated Order ID:', orderId);
 
             // ✅ REDIRECT TO PAYMENT PAGE BASED ON SELECTED METHOD
             const params = new URLSearchParams({
@@ -1387,8 +1387,8 @@
             window.location.href = paymentUrl;
             
         } catch (error) {
-            console.error('❌ Error creating order:', error);
-            alert('❌ Error creating order. Please try again.');
+            console.error(' Error creating order:', error);
+            alert(' Error creating order. Please try again.');
             completeOrderBtn.innerHTML = 'Complete Order';
             completeOrderBtn.disabled = false;
         }
@@ -1403,19 +1403,19 @@
         const phone = phoneInput.value.trim();
         
         if (!serviceType) {
-            alert('❌ Please select service type');
+            alert(' Please select service type');
             serviceTypeSelect.focus();
             return false;
         }
         
         if (!quantity || quantity < 1) {
-            alert('❌ Please enter valid quantity');
+            alert('Please enter valid quantity');
             quantityInput.focus();
             return false;
         }
         
         if (!username) {
-            alert('❌ Please enter username');
+            alert('Please enter username');
             usernameInput.focus();
             return false;
         }
@@ -1424,13 +1424,13 @@
         if (currentPlatform === 'YouTube' || currentPlatform === 'Monetize') {
             const channelUrl = document.getElementById('channelUrl') ? document.getElementById('channelUrl').value : '';
             if (!channelUrl) {
-                alert('❌ Please enter YouTube channel URL');
+                alert(' Please enter YouTube channel URL');
                 document.getElementById('channelUrl').focus();
                 return false;
             }
             
             if (!channelUrl.includes('youtube.com') && !channelUrl.includes('youtu.be')) {
-                alert('❌ Please enter valid YouTube channel URL');
+                alert(' Please enter valid YouTube channel URL');
                 document.getElementById('channelUrl').focus();
                 return false;
             }
@@ -1439,7 +1439,7 @@
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            alert('❌ Please enter valid email address');
+            alert(' Please enter valid email address');
             emailInput.focus();
             return false;
         }
@@ -1448,7 +1448,7 @@
         const phoneRegex = /^(\+92|0)[0-9]{9,10}$/;
         const cleanPhone = phone.replace(/[\s+-]/g, '');
         if (!phoneRegex.test(cleanPhone)) {
-            alert('❌ Please enter valid Pakistani phone number (e.g., 03001234567 or +923001234567)');
+            alert(' Please enter valid Pakistani phone number (e.g., 03001234567 or +923001234567)');
             phoneInput.focus();
             return false;
         }
@@ -1459,13 +1459,13 @@
             const channelCategory = document.getElementById('channelCategory') ? document.getElementById('channelCategory').value : '';
             
             if (!currentSubscribers || currentSubscribers < 0) {
-                alert('❌ Please enter current subscribers count');
+                alert(' Please enter current subscribers count');
                 document.getElementById('currentSubscribers').focus();
                 return false;
             }
             
             if (!channelCategory) {
-                alert('❌ Please select channel category');
+                alert(' Please select channel category');
                 document.getElementById('channelCategory').focus();
                 return false;
             }
