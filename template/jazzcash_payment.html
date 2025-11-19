@@ -577,23 +577,23 @@
 
           // Validation
           if (!phoneNumber || !enteredAmount) {
-              alert("❌ Please fill all fields");
+              alert(" Please fill all fields");
               return;
           }
 
           if (!phoneNumber.match(/^03[0-9]{9}$/)) {
-              alert("❌ Please enter valid Pakistani phone number");
+              alert(" Please enter valid Pakistani phone number");
               return;
           }
 
           if (enteredAmount <= 0) {
-              alert("❌ Please enter valid amount");
+              alert(" Please enter valid amount");
               return;
           }
 
           // Check if entered amount matches order amount
           if (amount && parseInt(enteredAmount) !== parseInt(amount)) {
-              alert("❌ Amount does not match order total. Please enter exact amount: Rs. " + amount);
+              alert(" Amount does not match order total. Please enter exact amount: Rs. " + amount);
               return;
           }
 
@@ -610,7 +610,7 @@
 
           } catch (error) {
               console.error("Payment verification error:", error);
-              alert("❌ Network error. Please check your connection and try again.");
+              alert(" Network error. Please check your connection and try again.");
           } finally {
               button.innerHTML = '<i class="fas fa-check-circle"></i> Confirm Payment';
               button.disabled = false;
@@ -635,9 +635,9 @@
               const API_BASE = 'https://python22.pythonanywhere.com';
               const response = await fetch(`${API_BASE}/test`);
               const text = await response.text();
-              console.log('✅ Backend connected:', text);
+              console.log('Backend connected:', text);
           } catch (error) {
-              console.error('❌ Backend connection failed:', error);
+              console.error(' Backend connection failed:', error);
           }
       }
 
