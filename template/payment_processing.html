@@ -910,58 +910,65 @@
                 }
             }
         
-            // ✅ PAYMENT VERIFICATION FUNCTION
-            async function verifyPayment() {
-                try {
-                    verificationAttempts++;
-        
-                    console.log(`Verification attempt ${verificationAttempts} of ${maxAttempts}`);
-        
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const requestData = {
-                        order_id: orderId,
-                        payment_method: paymentMethod,
-                        phone_number: urlParams.get('phone') || "N/A",
-                        amount: parseInt(urlParams.get('amount') || "0"),
-                    };
-        
-                    console.log("Sending payment verification request:", requestData);
-        
-                    // Simulate API call - Replace with your actual API endpoint
-                    const response = await simulateAPICall(requestData);
-        
-                    console.log("Response data:", response);
-        
-                    if (response.success) {
-                        // Success
-                        console.log("Payment verified successfully");
-                        if (timerInterval) clearInterval(timerInterval);
-                        showSuccessState(response.transaction_id);
-                    } else {
-                        // Error
-                        console.log("Payment verification failed:", response.message);
-                        if (verificationAttempts < maxAttempts) {
-                            console.log(`Retrying... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
-                            setTimeout(verifyPayment, 2000);
-                        } else {
-                            showErrorState(
-                                response.message || "Payment verification failed after multiple attempts"
-                            );
-                        }
-                    }
-                } catch (error) {
-                    console.error("Payment verification error:", error);
-        
-                    if (verificationAttempts < maxAttempts) {
-                        console.log(`Retrying after error... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
-                        setTimeout(verifyPayment, 2000);
-                    } else {
-                        showErrorState(
-                            "Network error. Please check your connection and try again."
-                        );
-                    }
-                }
+          // ✅ REAL PAYMENT VERIFICATION FUNCTION
+async function verifyPayment() {
+    try {
+        verificationAttempts++;
+
+        console.log(`Verification attempt ${verificationAttempts} of ${maxAttempts}`);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestData = {
+            order_id: orderId,
+            payment_method: paymentMethod,
+            phone_number: urlParams.get('phone') || "N/A",
+            amount: parseInt(urlParams.get('amount') || "0"),
+        };
+
+        console.log("Sending payment verification request:", requestData);
+
+        // ✅ REAL API CALL - Aapke backend pe bhejega
+        const response = await fetch(`${API_BASE}/verify-payment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
+        });
+
+        const result = await response.json();
+        console.log("API Response:", result);
+
+        if (result.success) {
+            // ✅ Only success if real payment found
+            console.log("Payment verified successfully");
+            if (timerInterval) clearInterval(timerInterval);
+            showSuccessState(result.transaction_id);
+        } else {
+            // ❌ Payment not found
+            console.log("Payment verification failed:", result.message);
+            if (verificationAttempts < maxAttempts) {
+                console.log(`Retrying... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
+                setTimeout(verifyPayment, 5000); // 5 seconds wait
+            } else {
+                showErrorState(
+                    result.message || "Payment not found. Please make sure you have sent the payment."
+                );
             }
+        }
+    } catch (error) {
+        console.error("Payment verification error:", error);
+
+        if (verificationAttempts < maxAttempts) {
+            console.log(`Retrying after error... Attempt ${verificationAttempts + 1} of ${maxAttempts}`);
+            setTimeout(verifyPayment, 5000);
+        } else {
+            showErrorState(
+                "Network error. Please check your connection and try again."
+            );
+        }
+    }
+}
         
             // Simulate API call - Replace with your actual API
             async function simulateAPICall(requestData) {
