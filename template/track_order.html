@@ -508,7 +508,7 @@
             
             // Set completion time
             const now = new Date();
-            const completionTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const completionTime = new Date(now.getTime() + 20 * 60 * 60 * 1000); // 20 hours
             document.getElementById('completionTime').textContent = 
                 'Expected by: ' + completionTime.toLocaleString();
         }
